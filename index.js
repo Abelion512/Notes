@@ -18,7 +18,6 @@ function weekKey(date) {
 
 // ==== Abelion Notes Animation ====
 window.addEventListener('DOMContentLoaded', ()=>{
-  // Abelion Notes teks animasi
   let spans = document.querySelectorAll('#abelion-text span');
   spans.forEach((sp,i)=>{
     setTimeout(()=>sp.classList.add('ani'), i*70+180);
@@ -61,6 +60,36 @@ function renderMoodMini() {
   });
   if(!weeks.length) html += `<div class="mood-graph"><span style="font-size:1.09em;opacity:.7;">Belum ada data mood minggu ini.</span></div>`;
   document.getElementById("mood-mini").innerHTML = html;
+}
+
+// ==== Grafik Mood Harian ====
+function renderMoodDaily() {
+  const notes = getNotes();
+  // 7 hari terakhir
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    days.push(d);
+  }
+  let html = `<div style="font-weight:600;font-size:1.01em;margin-bottom:2px;">Mood Harian</div><div class="mood-days">`;
+  days.forEach(day=>{
+    const key = day.toISOString().slice(0,10);
+    const n = notes.filter(nt=>nt.createdAt && new Date(nt.createdAt).toISOString().slice(0,10)===key);
+    let m = "none";
+    if(n.length){
+      // mayoritas mood
+      const count = {smile:0,flat:0,sad:0};
+      n.forEach(x=>{if(count[x.mood]!=null)count[x.mood]++;});
+      m = Object.entries(count).sort((a,b)=>b[1]-a[1])[0][0];
+    }
+    html += `<div class="mood-day-bar ${m}" title="${n.length?n.length+' catatan':''}">
+      ${m==="smile"?"😄":m==="flat"?"😐":m==="sad"?"😢":"–"}
+      <div class="mood-day-label">${day.toLocaleDateString("id-ID",{weekday:"short"})}</div>
+    </div>`;
+  });
+  html += "</div>";
+  document.getElementById("mood-graph-daily").innerHTML = html;
 }
 
 // ==== Render Notes ====
@@ -142,6 +171,7 @@ function renderNotes(filter="") {
         saveNotes(notes);
         renderNotes(document.getElementById("search-notes").value);
         renderMoodMini();
+        renderMoodDaily();
       }
     };
     // Edit Icon
@@ -172,7 +202,7 @@ function showAddNoteDialog(editNote) {
     background:rgba(60,40,130,0.08);
     display:flex;align-items:center;justify-content:center;`;
   div.innerHTML = `
-    <form id="note-form" style="background:#fff;padding:26px 20px 21px 20px;max-width:390px;width:97vw;border-radius:17px;box-shadow:0 6px 50px #667eea31;display:flex;flex-direction:column;gap:10px;animation:fadeIn .29s;">
+    <form id="note-form" style="background:#fff;padding:26px 20px 21px 20px;max-width:390px;width:97vw;border-radius:17px;box-shadow:0 6px 50px #667eea31;display:flex;flex-direction:column;gap:10px;animation:fadeInMorph .29s;">
       <div style="display:flex;align-items:center;gap:12px;">
         <input id="note-icon" value="${editNote?editNote.icon||'📝':'📝'}" maxlength="3" style="font-size:1.52em;width:2.2em;text-align:center;border-radius:8px;"/>
         <input id="note-title" type="text" required placeholder="Judul catatan" maxlength="60" value="${editNote?editNote.title:''}" style="font-size:1.09em;flex:1;padding:7px 10px;border-radius:8px;border:1px solid #ddd;" />
@@ -239,6 +269,7 @@ function showAddNoteDialog(editNote) {
     saveNotes(notes);
     renderNotes(document.getElementById("search-notes").value);
     renderMoodMini();
+    renderMoodDaily();
     showSnackbar("Tersimpan!");
     document.body.removeChild(div);
   };
@@ -276,3 +307,4 @@ document.getElementById("chapter-grid").addEventListener("dblclick", function(e)
 // ==== Initial Render ====
 renderNotes();
 renderMoodMini();
+renderMoodDaily();
