@@ -12,13 +12,34 @@
       <div class="edit-actions">
         <button class="edit-btn" id="edit-note-btn">Edit</button>
       </div>
+      <div class="note-meta" id="note-meta"></div>
+      <div style="font-size:2.4em;line-height:1.1;" id="note-icon"></div>
       <h1 class="note-title"></h1>
       <p class="note-content"></p>
     </div>
     <div id="note-edit" class="detail-card" style="display:none">
       <form id="edit-form">
-        <input type="text" class="edit-title" id="edit-title" required />
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input id="edit-icon" maxlength="3" style="font-size:1.52em;width:2.2em;text-align:center;border-radius:8px;" />
+          <input type="text" class="edit-title" id="edit-title" required />
+        </div>
         <textarea class="edit-content" id="edit-content" required></textarea>
+        <div class="edit-label">
+          <label for="edit-label">Label:</label>
+          <select id="edit-label">
+            <option value="important">Penting</option>
+            <option value="medium">Medium</option>
+            <option value="low">Santai</option>
+          </select>
+        </div>
+        <div class="edit-mood">
+          <label for="edit-mood">Mood:</label>
+          <select id="edit-mood">
+            <option value="smile">😄 Senang</option>
+            <option value="flat">😐 Biasa</option>
+            <option value="sad">😢 Sedih</option>
+          </select>
+        </div>
         <div class="edit-actions">
           <button type="submit" class="save-btn">Simpan</button>
           <button type="button" class="cancel-btn" id="cancel-edit-btn">Batal</button>
@@ -27,7 +48,18 @@
     </div>
     <a href="index.html" class="back-link">&larr; Kembali ke Beranda</a>
   </div>
+  <div id="snackbar">Tersimpan!</div>
   <script>
+    function formatDateISO(dt) {
+      const d = new Date(dt);
+      return d.toLocaleString("id-ID", { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+    }
+    function showSnackbar(msg="Tersimpan!") {
+      const sb = document.getElementById("snackbar");
+      sb.textContent = msg;
+      sb.className = "show";
+      setTimeout(()=>sb.className="",1800);
+    }
     // Ambil id note dari URL
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
@@ -38,17 +70,30 @@
     const noteEdit = document.getElementById("note-edit");
     const noteTitle = document.querySelector(".note-title");
     const noteContent = document.querySelector(".note-content");
+    const noteMeta = document.getElementById("note-meta");
+    const noteIcon = document.getElementById("note-icon");
     const editBtn = document.getElementById("edit-note-btn");
     const editForm = document.getElementById("edit-form");
     const editTitle = document.getElementById("edit-title");
     const editContent = document.getElementById("edit-content");
+    const editLabel = document.getElementById("edit-label");
+    const editMood = document.getElementById("edit-mood");
+    const editIcon = document.getElementById("edit-icon");
     const cancelBtn = document.getElementById("cancel-edit-btn");
 
     function renderNoteDetail() {
-      note = notes.find(n => n.id === id);
+      note = JSON.parse(localStorage.getItem("notes-list") || "[]").find(n => n.id === id);
       if (note) {
         noteTitle.textContent = note.title;
         noteContent.textContent = note.content;
+        noteIcon.textContent = note.icon||'📝';
+        noteMeta.innerHTML = `
+          <span class="note-date" title="Dibuat">${formatDateISO(note.createdAt)}</span>
+          <span class="note-date" title="Terakhir diedit">Edit: ${formatDateISO(note.lastEdit||note.createdAt)}</span>
+          <span class="note-mood" title="Mood">${note.mood==="smile"?"😄":note.mood==="flat"?"😐":note.mood==="sad"?"😢":"❔"}</span>
+          ${note.label?`<span class="note-label label-${note.label}">${note.label==="important"?"Penting":note.label==="medium"?"Medium":"Santai"}</span>`:""}
+        `;
+        editBtn.style.display = "";
       } else {
         noteTitle.textContent = "Catatan tidak ditemukan";
         noteContent.textContent = "";
@@ -62,6 +107,9 @@
       if (!note) return;
       editTitle.value = note.title;
       editContent.value = note.content;
+      editLabel.value = note.label||'medium';
+      editMood.value = note.mood||'flat';
+      editIcon.value = note.icon||"📝";
       noteDetail.style.display = "none";
       noteEdit.style.display = "";
       editTitle.focus();
@@ -70,7 +118,6 @@
     editBtn.onclick = function() {
       renderNoteEdit();
     };
-
     cancelBtn.onclick = function() {
       renderNoteDetail();
     };
@@ -78,11 +125,16 @@
     editForm.onsubmit = function(e) {
       e.preventDefault();
       note.title = editTitle.value.trim();
-      note.content = editContent.value.trim();
+      note.content = editContent.value;
+      note.icon = editIcon.value||'📝';
+      note.label = editLabel.value;
+      note.mood = editMood.value;
+      note.lastEdit = Date.now();
       notes = notes.map(n => n.id === id ? note : n);
       localStorage.setItem("notes-list", JSON.stringify(notes));
       renderNoteDetail();
       document.title = note.title;
+      showSnackbar("Tersimpan!");
     };
 
     if (note) {
