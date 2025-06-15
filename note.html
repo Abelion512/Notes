@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catatan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div id="note-detail" class="detail-card" style="display:none">
+      <div class="edit-actions">
+        <button class="edit-btn" id="edit-note-btn">Edit</button>
+      </div>
+      <h1 class="note-title"></h1>
+      <p class="note-content"></p>
+    </div>
+    <div id="note-edit" class="detail-card" style="display:none">
+      <form id="edit-form">
+        <input type="text" class="edit-title" id="edit-title" required />
+        <textarea class="edit-content" id="edit-content" required></textarea>
+        <div class="edit-actions">
+          <button type="submit" class="save-btn">Simpan</button>
+          <button type="button" class="cancel-btn" id="cancel-edit-btn">Batal</button>
+        </div>
+      </form>
+    </div>
+    <a href="index.html" class="back-link">&larr; Kembali ke Beranda</a>
+  </div>
+  <script>
+    // Ambil id note dari URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    let notes = JSON.parse(localStorage.getItem("notes-list") || "[]");
+    let note = notes.find(n => n.id === id);
+
+    const noteDetail = document.getElementById("note-detail");
+    const noteEdit = document.getElementById("note-edit");
+    const noteTitle = document.querySelector(".note-title");
+    const noteContent = document.querySelector(".note-content");
+    const editBtn = document.getElementById("edit-note-btn");
+    const editForm = document.getElementById("edit-form");
+    const editTitle = document.getElementById("edit-title");
+    const editContent = document.getElementById("edit-content");
+    const cancelBtn = document.getElementById("cancel-edit-btn");
+
+    function renderNoteDetail() {
+      note = notes.find(n => n.id === id);
+      if (note) {
+        noteTitle.textContent = note.title;
+        noteContent.textContent = note.content;
+      } else {
+        noteTitle.textContent = "Catatan tidak ditemukan";
+        noteContent.textContent = "";
+        editBtn.style.display = "none";
+      }
+      noteDetail.style.display = "";
+      noteEdit.style.display = "none";
+    }
+
+    function renderNoteEdit() {
+      if (!note) return;
+      editTitle.value = note.title;
+      editContent.value = note.content;
+      noteDetail.style.display = "none";
+      noteEdit.style.display = "";
+      editTitle.focus();
+    }
+
+    editBtn.onclick = function() {
+      renderNoteEdit();
+    };
+
+    cancelBtn.onclick = function() {
+      renderNoteDetail();
+    };
+
+    editForm.onsubmit = function(e) {
+      e.preventDefault();
+      note.title = editTitle.value.trim();
+      note.content = editContent.value.trim();
+      notes = notes.map(n => n.id === id ? note : n);
+      localStorage.setItem("notes-list", JSON.stringify(notes));
+      renderNoteDetail();
+      document.title = note.title;
+    };
+
+    if (note) {
+      renderNoteDetail();
+      document.title = note.title;
+    } else {
+      renderNoteDetail();
+    }
+  </script>
+</body>
+</html>
