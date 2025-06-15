@@ -100,11 +100,11 @@ body {
   font-weight: bold;
   color: #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 45px;
   width: 45px;
   height: 45px;
   cursor: pointer;
-  margin-left: 10px;
+  margin-right: 10px;
   box-shadow: 0 4px 16px #667eea22;
   transition: background var(--transition), transform .15s;
   display: flex;
