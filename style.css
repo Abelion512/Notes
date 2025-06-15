@@ -97,7 +97,7 @@ body {
 }
 .mood-graph {
   display: flex;
-  gap: 17px;
+  gap: 22px;
   align-items: flex-end;
   min-height: 40px;
   padding: 8px 6px 0 1px;
