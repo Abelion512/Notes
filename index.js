@@ -9,53 +9,47 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// --- Animasi Intro 0-100% slow, fade out ---
-window.addEventListener('DOMContentLoaded', ()=>{
-  let p = 0;
-  const pt = document.getElementById('progress-text');
-  const intro = document.getElementById('intro-anim');
-  const main = document.getElementById('main-content');
-  let interval = setInterval(()=>{
-    p = Math.min(100, p+Math.floor(Math.random()*7+1));
-    pt.textContent = p+"%";
-    if(p>=100){
-      clearInterval(interval);
-      intro.style.opacity = 0;
-      setTimeout(()=>{
-        intro.style.display="none";
-        main.classList.remove('hidden');
-        setTimeout(()=>document.querySelector('.title-abelion').classList.add('animated'),100);
-      },1300);
+// --- Notes: localStorage
+const LS_KEY = 'abelion-notes-v2';
+function loadNotes() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY)) || [];
+  } catch { return []; }
+}
+function saveNotes() {
+  localStorage.setItem(LS_KEY, JSON.stringify(notes));
+}
+
+// Dummy jika pertama kali
+let notes = loadNotes();
+if(!notes.length) {
+  notes = [
+    {
+      id: "1",
+      icon: "⭐", title: "Rencana Bulan Juni",
+      content: "<ul><li>Fokus UTBK</li><li>Kerjakan <i>proyek FocusTimerin</i></li><li>Belajar AI &amp; UI/UX</li></ul>",
+      date: "2025-06-15",
+      pinned: true
+    },
+    {
+      id: "2",
+      icon: "", title: "Matematika",
+      content: "<ul><li>Diskusi di sesi tutor</li></ul>",
+      date: "2025-06-12",
+      pinned: false
+    },
+    {
+      id: "3",
+      icon: "", title: "oke",
+      content: "oke",
+      date: "2025-06-16",
+      pinned: false
     }
-  }, 40);
-});
+  ];
+  saveNotes();
+}
 
-// --- Data dummy (replace with localStorage for persistent) ---
-let notes = [
-  {
-    id: "1",
-    icon: "⭐", title: "Rencana Bulan Juni",
-    content: "<ul><li>Fokus UTBK</li><li>Kerjakan <i>proyek FocusTimerin</i></li><li>Belajar AI &amp; UI/UX</li></ul>",
-    date: "2025-06-15",
-    pinned: true
-  },
-  {
-    id: "2",
-    icon: "", title: "Matematika",
-    content: "<ul><li>Diskusi di sesi tutor</li></ul>",
-    date: "2025-06-12",
-    pinned: false
-  },
-  {
-    id: "3",
-    icon: "", title: "oke",
-    content: "oke",
-    date: "2025-06-16",
-    pinned: false
-  }
-];
-
-// --- Mood harian dummy ---
+// Mood harian dummy
 const moods = [
   {day:"Sen",emoji:"😄"}, {day:"Sel",emoji:"😄"},
   {day:"Rab",emoji:"😐"}, {day:"Kam",emoji:"😄"},
@@ -81,11 +75,35 @@ function formatTanggal(tglStr) {
   return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// --- Notes Card (klik = ke note.html?id=..., ada pin/delete) ---
+// --- Search Functionality ---
+let searchQuery = '';
+function renderSearchBar() {
+  let searchDiv = document.getElementById('search-bar');
+  if(!searchDiv) {
+    searchDiv = document.createElement('div');
+    searchDiv.id = 'search-bar';
+    searchDiv.innerHTML = `
+      <input id="search-input" class="search-input" type="text" placeholder="Cari catatan..." autocomplete="off"/>
+    `;
+    const notesGrid = document.getElementById('notes-grid');
+    notesGrid.parentNode.insertBefore(searchDiv, notesGrid);
+    document.getElementById('search-input').addEventListener('input', function(){
+      searchQuery = this.value.trim().toLowerCase();
+      renderNotes();
+    });
+  }
+}
+
+// --- Notes Card (klik ke note.html?id=..., pin/delete interaktif, search) ---
 function renderNotes() {
   let grid = document.getElementById("notes-grid");
-  // Sort pinned di atas, lalu urut tanggal desc
-  let sorted = [...notes].sort((a, b) => {
+  let filtered = notes.filter(n => {
+    if(!searchQuery) return true;
+    // Cari di judul dan isi (tanpa tag HTML)
+    let contentText = n.content.replace(/<[^>]+>/g, '').toLowerCase();
+    return n.title.toLowerCase().includes(searchQuery) || contentText.includes(searchQuery);
+  });
+  let sorted = [...filtered].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
     return new Date(b.date) - new Date(a.date);
@@ -93,8 +111,12 @@ function renderNotes() {
   grid.innerHTML = sorted.map(n=>`
     <div class="note-card" data-id="${n.id}" tabindex="0" role="link">
       <div class="note-actions">
-        <button class="action-btn pin${n.pinned?' pin-active':''}" data-action="pin" title="Pin/Unpin">${n.pinned?'📌':'📍'}</button>
-        <button class="action-btn delete" data-action="delete" title="Hapus">🗑️</button>
+        <button class="action-btn pin${n.pinned?' pin-active':''}" data-action="pin" title="Pin/Unpin" aria-label="Pin/Unpin catatan">
+          <span class="pin-inner">${n.pinned?'📌':'📍'}</span>
+        </button>
+        <button class="action-btn delete" data-action="delete" title="Hapus" aria-label="Hapus catatan">
+          <span class="delete-inner">🗑️</span>
+        </button>
       </div>
       <div class="note-title">
         ${n.icon?`<span class="icon">${n.icon}</span>`:""}${n.title}
@@ -104,21 +126,19 @@ function renderNotes() {
     </div>
   `).join("");
 
-  // Attach events
+  // Interaktif event
   grid.querySelectorAll('.note-card').forEach(card => {
     // Card click: redirect to note.html?id=...
     card.addEventListener('click', function(e) {
-      // If action button is clicked, don't trigger card click
-      if(e.target.classList.contains('action-btn')) return;
+      if(e.target.closest('.action-btn')) return;
       window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
     });
-    // Accessibility: Enter/Space
     card.onkeydown = function(e) {
       if(e.key==='Enter' || e.key===' ') {
         window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
       }
     };
-    // Pin/Delete events
+    // Pin/Delete
     card.querySelectorAll('.action-btn').forEach(btn => {
       btn.onclick = function(e) {
         e.preventDefault();
@@ -129,9 +149,15 @@ function renderNotes() {
         const note = notes[idx];
         if(this.dataset.action==="pin") {
           note.pinned = !note.pinned;
+          saveNotes();
+          // animasi icon (bounce)
+          this.querySelector('.pin-inner').animate([
+            {transform:'scale(1.2)'},{transform:'scale(1)'}
+          ],{duration:200});
         } else if(this.dataset.action==="delete") {
           if(confirm('Hapus catatan ini?')) {
             notes.splice(idx,1);
+            saveNotes();
           }
         }
         renderNotes();
@@ -157,7 +183,7 @@ window.onclick = function(e) {
   if(e.target === aboutModal) aboutModal.classList.remove("show");
 };
 
-// --- Tambah catatan baru (dummy) ---
+// --- Tambah catatan baru ---
 document.getElementById('add-note-btn').onclick = function() {
   let title = prompt("Judul catatan:");
   if(!title) return;
@@ -176,11 +202,13 @@ document.getElementById('add-note-btn').onclick = function() {
     date: tgl,
     pinned: false
   });
+  saveNotes();
   renderNotes();
 };
 
 // --- Inisialisasi semua ---
 window.addEventListener('DOMContentLoaded', ()=>{
   renderMoodGraph();
+  renderSearchBar();
   renderNotes();
 });
