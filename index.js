@@ -1,3 +1,4 @@
+// --- Live time pojok kanan atas ---
 function updateTime() {
   const el = document.getElementById('top-time');
   if (!el) return;
@@ -5,26 +6,32 @@ function updateTime() {
   const pad = n => n.toString().padStart(2, '0');
   el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
-setInterval(updateTime, 1000); updateTime();
+setInterval(updateTime, 1000);
+updateTime();
 
+// --- Notes: localStorage
 const LS_KEY = 'abelion-notes-v2';
-function loadNotes() { try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch { return []; } }
-function saveNotes() { localStorage.setItem(LS_KEY, JSON.stringify(notes)); }
-let notes = loadNotes();
-if(!notes.length) {
-  notes = [
-    { id: "1", icon: "⭐", title: "Rencana Bulan Juni", content: "<ul><li>Fokus UTBK</li><li>Kerjakan <i>proyek FocusTimerin</i></li><li>Belajar AI &amp; UI/UX</li></ul>", date: "2025-06-15", pinned: true },
-    { id: "2", icon: "", title: "Matematika", content: "<ul><li>Diskusi di sesi tutor</li></ul>", date: "2025-06-12", pinned: false },
-    { id: "3", icon: "", title: "oke", content: "oke", date: "2025-06-16", pinned: false }
-  ];
-  saveNotes();
+function loadNotes() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY)) || [];
+  } catch { return []; }
 }
+function saveNotes() {
+  localStorage.setItem(LS_KEY, JSON.stringify(notes));
+}
+
+// Tidak ada notes dummy untuk pengguna baru!
+let notes = loadNotes();
+
+// Mood harian dummy
 const moods = [
   {day:"Sen",emoji:"😄"}, {day:"Sel",emoji:"😄"},
   {day:"Rab",emoji:"😐"}, {day:"Kam",emoji:"😄"},
   {day:"Jum",emoji:"😢"}, {day:"Sab",emoji:"😐"},
   {day:"Min",emoji:"😄"}
 ];
+
+// --- Mood Graph harian (centered) ---
 function renderMoodGraph() {
   let el = document.getElementById("mood-graph");
   el.innerHTML = moods.map(m=>`
@@ -34,11 +41,15 @@ function renderMoodGraph() {
     </div>
   `).join("");
 }
+
+// --- Format tanggal Indonesia ---
 function formatTanggal(tglStr) {
   const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   const d = new Date(tglStr);
   return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
 }
+
+// --- Search Functionality ---
 let searchQuery = '';
 function renderSearchBar() {
   let searchDiv = document.getElementById('search-bar');
@@ -56,8 +67,14 @@ function renderSearchBar() {
     });
   }
 }
+
+// --- Notes Card (klik ke note.html?id=..., pin/delete interaktif, search) ---
 function renderNotes() {
   let grid = document.getElementById("notes-grid");
+  if (!notes.length) {
+    grid.innerHTML = `<div style="color:#aaa;text-align:center;margin:38px auto 0 auto;font-size:1.1em;">Belum ada catatan.<br>Yuk tambah catatan baru!</div>`;
+    return;
+  }
   let filtered = notes.filter(n => {
     if(!searchQuery) return true;
     let contentText = n.content.replace(/<[^>]+>/g, '').toLowerCase();
@@ -68,6 +85,10 @@ function renderNotes() {
     if (!a.pinned && b.pinned) return 1;
     return new Date(b.date) - new Date(a.date);
   });
+  if (!sorted.length) {
+    grid.innerHTML = `<div style="color:#aaa;text-align:center;margin:38px auto 0 auto;font-size:1.1em;">Catatan tidak ditemukan.</div>`;
+    return;
+  }
   grid.innerHTML = sorted.map(n=>`
     <div class="note-card" data-id="${n.id}" tabindex="0" role="link">
       <div class="note-actions">
@@ -85,7 +106,10 @@ function renderNotes() {
       <div class="note-date">Ditulis: ${formatTanggal(n.date)}</div>
     </div>
   `).join("");
+
+  // Interaktif event
   grid.querySelectorAll('.note-card').forEach(card => {
+    // Card click: redirect to note.html?id=...
     card.addEventListener('click', function(e) {
       if(e.target.closest('.action-btn')) return;
       window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
@@ -95,21 +119,25 @@ function renderNotes() {
         window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
       }
     };
+    // Pin/Delete
     card.querySelectorAll('.action-btn').forEach(btn => {
       btn.onclick = function(e) {
-        e.preventDefault(); e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
         const id = card.getAttribute('data-id');
         const idx = notes.findIndex(n=>n.id===id);
         if(idx<0) return;
         const note = notes[idx];
         if(this.dataset.action==="pin") {
-          note.pinned = !note.pinned; saveNotes();
+          note.pinned = !note.pinned;
+          saveNotes();
           this.querySelector('.pin-inner').animate([
             {transform:'scale(1.2)'},{transform:'scale(1)'}
           ],{duration:200});
         } else if(this.dataset.action==="delete") {
           if(confirm('Hapus catatan ini?')) {
-            notes.splice(idx,1); saveNotes();
+            notes.splice(idx,1);
+            saveNotes();
           }
         }
         renderNotes();
@@ -117,6 +145,7 @@ function renderNotes() {
     });
   });
 }
+
 // --- About Modal (nav About Me) ---
 const aboutModal = document.getElementById("about-modal");
 document.getElementById("nav-about").onclick = function(e) {
