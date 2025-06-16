@@ -7,13 +7,17 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+  <!-- Waktu pojok kanan atas -->
+  <div class="top-time" id="top-time"></div>
+
   <!-- Animasi Intro -->
   <div id="intro-anim">
     <div class="progress-circle">
       <span id="progress-text">0%</span>
     </div>
   </div>
-  <!-- Konten utama -->
+
+  <!-- Main content -->
   <div id="main-content" class="main-content hidden">
     <header class="hero-section">
       <h1 class="title-abelion animated">Abelion Notes</h1>
@@ -25,7 +29,9 @@
     <!-- Grafik mood harian -->
     <section class="mood-graph-section">
       <div class="mood-graph-title">Mood Harian</div>
-      <div class="mood-graph" id="mood-graph"></div>
+      <div class="mood-graph-center">
+        <div class="mood-graph" id="mood-graph"></div>
+      </div>
     </section>
 
     <!-- List catatan -->
@@ -33,21 +39,36 @@
       <h2 class="catatan-heading">Catatan Anda</h2>
       <div class="notes-grid" id="notes-grid"></div>
     </section>
+  </div>
 
-    <!-- About Abelink di bagian bawah -->
-    <footer>
+  <!-- Navigation Bottom Bar -->
+  <nav class="nav-bottom">
+    <a href="#" class="nav-item active" id="nav-home">
+      <span class="nav-ico">🏠</span>
+      <span class="nav-txt">Home</span>
+    </a>
+    <a href="#" class="nav-item" id="nav-about">
+      <span class="nav-ico">👤</span>
+      <span class="nav-txt">About Me</span>
+    </a>
+  </nav>
+
+  <!-- About Me Modal -->
+  <div id="about-modal" class="about-modal">
+    <div class="about-modal-content">
+      <button class="about-close" id="about-close">&times;</button>
       <div class="about-abelink">
         <div class="about-text">
-          <h3>Tentang Abelink</h3>
+          <h3>Tentang Abelion</h3>
           <p>
             Aku membuat aplikasi catatan ini untuk belajar, mencatat, dan terus berkembang menuju cita-citaku.
           </p>
-          <a href="#" class="btn-about">Lihat Catatan &rsaquo;</a>
         </div>
-        <img src="abelink-girl.png" alt="Abelink" class="about-img">
+        <img src="abelink-girl.png" alt="Abelion" class="about-img">
       </div>
-    </footer>
+    </div>
   </div>
+
   <script src="index.js"></script>
 </body>
-</html>
+    </html>
