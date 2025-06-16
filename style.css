@@ -5,7 +5,7 @@ body {
   margin: 0;
   min-height: 100vh;
   box-sizing: border-box;
-  padding-bottom: 80px; /* for nav bottom */
+  padding-bottom: 80px;
 }
 .top-time {
   position: fixed;
@@ -177,6 +177,8 @@ body {
   margin-left: auto;
   margin-right: auto;
   border: none;
+  cursor: pointer;
+  text-decoration: none;
 }
 @keyframes fadeInMorph {
   from { opacity: 0; transform: translateY(40px) scale(0.93) border-radius: 60px;}
@@ -204,6 +206,60 @@ body {
   margin-top: auto;
   margin-bottom: 2px;
 }
+.note-actions {
+  display: flex;
+  gap: 10px;
+  position: absolute;
+  top: 14px;
+  right: 17px;
+  z-index: 2;
+}
+.action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1em;
+  opacity: 0.7;
+  transition: opacity .2s, color .2s;
+  padding: 0 2px;
+  border-radius: 8px;
+}
+.action-btn:active {
+  background: #f5f2e7;
+}
+.action-btn.pin.pin-active {
+  color: #e8b800;
+}
+.action-btn.pin .pin-inner {
+  display:inline-block;
+  transition: transform .18s;
+}
+.action-btn:hover {
+  opacity: 1;
+  color: #2070ea;
+}
+.note-card {
+  position: relative; /* untuk .note-actions */
+}
+
+.search-input {
+  width: 95%;
+  max-width: 400px;
+  margin: 0 auto 18px auto;
+  display: block;
+  border: 1.5px solid #e5e2d7;
+  border-radius: 10px;
+  padding: 11px 15px;
+  font-size: 1.06em;
+  background: #fff;
+  box-sizing: border-box;
+  outline: none;
+  transition: border .18s;
+}
+.search-input:focus {
+  border: 1.5px solid #2070ea;
+  background: #f9fafc;
+}
 
 .nav-bottom {
   position: fixed;
@@ -227,10 +283,6 @@ body {
   border-radius: 12px;
   text-decoration: none;
   transition: background .14s, color .18s;
-}
-.nav-item .nav-ico {
-  font-size: 1.42em;
-  margin-bottom: 1px;
 }
 .nav-item.active, .nav-item:hover {
   background: #f7f2e6;
@@ -293,4 +345,4 @@ body {
   .about-img { margin-bottom: 7px; }
   .notes-grid { gap: 14px; }
   .note-card { width: 97vw; max-width: 99vw; }
-  }
+}
