@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Abelion Notes</title>
   <link rel="stylesheet" href="style.css"/>
+  <!-- Tambah font unik dari Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;700&display=swap">
 </head>
 <body>
   <div class="top-time" id="top-time"></div>
@@ -15,10 +17,20 @@
   </div>
   <div id="main-content" class="main-content hidden">
     <header class="hero-section">
-      <h1 class="title-abelion animated">Abelion Notes</h1>
-      <p class="subtitle">Catat. Pahami. Eksekusi.</p>
-      <blockquote class="motto">“Gagal sekali bukan berarti gagal selamanya.”</blockquote>
-      <button class="btn-blue" id="add-note-btn">+ Tulis Catatan Baru</button>
+      <div class="hero-title-group">
+        <img src="abelion-maskot.svg" class="abelion-maskot" alt="Maskot Abelion" />
+        <h1 class="title-abelion animated">Abelion Notes</h1>
+      </div>
+      <p class="subtitle fadein-stagger">Catat. Pahami. Eksekusi.</p>
+      <blockquote class="motto fadein-stagger">“<span id="random-quote"></span>”</blockquote>
+      <button class="btn-blue fadein-stagger" id="add-note-btn">+ Tulis Catatan Baru</button>
+      <div class="theme-selector fadein-stagger">
+        <span>Pilih tema:</span>
+        <button class="theme-btn" data-theme="cream" title="Cream"><span class="theme-color theme-cream"></span></button>
+        <button class="theme-btn" data-theme="blue" title="Blue Sky"><span class="theme-color theme-blue"></span></button>
+        <button class="theme-btn" data-theme="pink" title="Pink"><span class="theme-color theme-pink"></span></button>
+        <button class="theme-btn" data-theme="dark" title="Dark"><span class="theme-color theme-dark"></span></button>
+      </div>
     </header>
     <section class="mood-graph-section">
       <div class="mood-graph-title">Mood Harian</div>
@@ -27,8 +39,31 @@
       </div>
     </section>
     <section>
-      <h2 class="catatan-heading">Catatan Anda</h2>
+      <h2 class="catatan-heading fadein-stagger">Catatan Anda</h2>
       <div class="notes-grid" id="notes-grid"></div>
+    </section>
+    <section class="about-section fadein-stagger" id="about-abelion">
+      <h2>Tentang Abelion</h2>
+      <div class="about-abelion-flex">
+        <img src="abelion-maskot.svg" alt="Mascot Abelion" class="about-maskot" />
+        <div>
+          <p><b>Abelion Notes</b> lahir dari keresahan bikin catatan belajar yang mudah, fun, dan personal.</p>
+          <ul>
+            <li>Gratis, tanpa login.</li>
+            <li>Bisa pin, copy, edit, dan search catatan.</li>
+            <li>Bisa pilih tema & mood biar nggak bosan!</li>
+            <li>Dibuat <b>Abelion</b> buat teman-teman pelajar, mahasiswa, & siapa saja.</li>
+          </ul>
+          <p class="about-story">“Kadang gagal satu, besok bisa sukses seribu kali. Catat prosesmu!”</p>
+        </div>
+      </div>
+    </section>
+    <section class="komunitas-section fadein-stagger" id="komunitas-abelion">
+      <h2>Eksplorasi & Komunitas</h2>
+      <div class="komunitas-box">
+        <a href="https://t.me/abelionnotes" target="_blank" class="btn-komunitas">Gabung Circle Abelion 🚀</a>
+        <a href="https://www.instagram.com/abelion512" target="_blank" class="btn-komunitas">Instagram</a>
+      </div>
     </section>
   </div>
   <nav class="nav-bottom">
@@ -36,7 +71,7 @@
       <span class="nav-txt">Home</span>
     </a>
     <a href="#" class="nav-item" id="nav-about">
-      <span class="nav-txt">About</span>
+      <span class="nav-txt">About Me</span>
     </a>
   </nav>
   <div id="about-modal" class="about-modal">
@@ -44,12 +79,12 @@
       <button class="about-close" id="about-close">&times;</button>
       <div class="about-abelink">
         <div class="about-text">
-          <h3>About</h3>
+          <h3>Tentang Abelion</h3>
           <p>
-            Abelion membuat aplikasi catatan ini untuk belajar, mencatat, dan terus berkembang menggapai cita-citata. 
+            Aku membuat aplikasi catatan ini untuk belajar, mencatat, dan terus berkembang menuju cita-citaku. 
           </p>
         </div>
-        <img src="OlivX logo.png" alt="Abelion" class="about-img">
+        <img src="abelion-maskot.svg" alt="Abelion" class="about-img">
       </div>
     </div>
   </div>
