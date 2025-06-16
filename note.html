@@ -1,148 +1,135 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Catatan</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Detail Catatan</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .note-detail-container {
+      max-width: 480px;
+      margin: 0 auto;
+      margin-top: 32px;
+      background: #fff;
+      border-radius: 19px;
+      box-shadow: 0 2px 18px #e0e0e055;
+      padding: 28px 18px 18px 18px;
+    }
+    .note-detail-title {
+      font-size:1.3em; font-weight:bold;margin-bottom:13px; display:flex;gap:7px;align-items:center;
+    }
+    .back-link {
+      display:inline-block;font-size:.97em;color:#2070ea;text-decoration:none;margin-bottom:8px;
+    }
+    .note-edit-row {
+      margin-bottom:13px;
+    }
+    .note-edit-row label {display:block;font-size:.97em;margin-bottom:3px;}
+    .note-edit-input, .note-edit-area {
+      width:100%;box-sizing:border-box;border-radius:8px;border:1.5px solid #e5e2d7;font-size:1em;padding:10px;margin-bottom:3px;
+    }
+    .note-edit-area {min-height:70px;resize:vertical;}
+    .note-edit-btns {display:flex; gap:12px;}
+    .btn-edit-save, .btn-edit-cancel {
+      padding:8px 20px; border:none; border-radius:8px; background:#2070ea; color:#fff; font-weight:500; cursor:pointer; font-size:1em; transition:background .16s;
+    }
+    .btn-edit-cancel {background:#aaa;}
+    .btn-edit-save:hover {background:#4498f7;}
+    .btn-edit-cancel:hover {background:#666;}
+    .edit-iconpicker {font-size:1.3em;}
+    .note-edit-label {padding:4px 10px;border-radius:6px;border:1px solid #eee;background:#faf6ee;font-size:0.98em;display:inline-block;}
+    .note-detail-date {font-size:0.97em;color:#aaa;opacity:.79;margin-top:7px;}
+    .note-edit-iconselect {font-size:1.15em;}
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div id="note-detail" class="detail-card" style="display:none">
-      <div class="edit-actions">
-        <button class="edit-btn" id="edit-note-btn">Edit</button>
+  <div class="top-time" id="top-time"></div>
+  <div class="note-detail-container">
+    <a href="index.html" class="back-link" id="back-link">&larr; Kembali</a>
+    <form id="note-edit-form" autocomplete="off">
+      <div class="note-detail-title">
+        <input id="edit-icon" class="note-edit-input edit-iconpicker" style="width:2.5em;text-align:center;display:inline-block;margin-right:6px;" maxlength="2" />
+        <input id="edit-title" class="note-edit-input" style="font-weight:bold;font-size:1.13em;" required maxlength="100" />
       </div>
-      <div class="note-meta" id="note-meta"></div>
-      <div style="font-size:2.4em;line-height:1.1;" id="note-icon"></div>
-      <h1 class="note-title"></h1>
-      <p class="note-content"></p>
-    </div>
-    <div id="note-edit" class="detail-card" style="display:none">
-      <form id="edit-form">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <input id="edit-icon" maxlength="3" style="font-size:1.52em;width:2.2em;text-align:center;border-radius:8px;" />
-          <input type="text" class="edit-title" id="edit-title" required />
-        </div>
-        <textarea class="edit-content" id="edit-content" required></textarea>
-        <div class="edit-label">
-          <label for="edit-label">Label:</label>
-          <select id="edit-label">
-            <option value="important">Penting</option>
-            <option value="medium">Medium</option>
-            <option value="low">Santai</option>
-          </select>
-        </div>
-        <div class="edit-mood">
-          <label for="edit-mood">Mood:</label>
-          <select id="edit-mood">
-            <option value="smile">😄 Senang</option>
-            <option value="flat">😐 Biasa</option>
-            <option value="sad">😢 Sedih</option>
-          </select>
-        </div>
-        <div class="edit-actions">
-          <button type="submit" class="save-btn">Simpan</button>
-          <button type="button" class="cancel-btn" id="cancel-edit-btn">Batal</button>
-        </div>
-      </form>
-    </div>
-    <a href="index.html" class="back-link">&larr; Kembali ke Beranda</a>
+      <div class="note-edit-row">
+        <label for="edit-content">Catatan</label>
+        <textarea id="edit-content" class="note-edit-area" required maxlength="2000"></textarea>
+      </div>
+      <div class="note-edit-row">
+        <label for="edit-label">Label/Mood (opsional)</label>
+        <input id="edit-label" class="note-edit-input note-edit-label" placeholder="Misal: mood, kerja, penting..." maxlength="20"/>
+      </div>
+      <div class="note-edit-btns">
+        <button type="submit" class="btn-edit-save">Simpan</button>
+        <button type="button" class="btn-edit-cancel" id="cancel-edit">Batal</button>
+      </div>
+      <div class="note-detail-date" id="note-detail-date"></div>
+    </form>
   </div>
-  <div id="snackbar">Tersimpan!</div>
   <script>
-    function formatDateISO(dt) {
-      const d = new Date(dt);
-      return d.toLocaleString("id-ID", { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+    // Top waktu
+    function updateTime() {
+      const el = document.getElementById('top-time');
+      if (!el) return;
+      const now = new Date();
+      const pad = n => n.toString().padStart(2, '0');
+      el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
     }
-    function showSnackbar(msg="Tersimpan!") {
-      const sb = document.getElementById("snackbar");
-      sb.textContent = msg;
-      sb.className = "show";
-      setTimeout(()=>sb.className="",1800);
+    setInterval(updateTime, 1000); updateTime();
+
+    const LS_KEY = 'abelion-notes-v2';
+    function loadNotes() { try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch { return []; } }
+    function saveNotes(notes) { localStorage.setItem(LS_KEY, JSON.stringify(notes)); }
+    function formatTanggal(tglStr) {
+      const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+      const d = new Date(tglStr);
+      return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
     }
-    // Ambil id note dari URL
+    // Baca id note dari url
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    let notes = JSON.parse(localStorage.getItem("notes-list") || "[]");
-    let note = notes.find(n => n.id === id);
-
-    const noteDetail = document.getElementById("note-detail");
-    const noteEdit = document.getElementById("note-edit");
-    const noteTitle = document.querySelector(".note-title");
-    const noteContent = document.querySelector(".note-content");
-    const noteMeta = document.getElementById("note-meta");
-    const noteIcon = document.getElementById("note-icon");
-    const editBtn = document.getElementById("edit-note-btn");
-    const editForm = document.getElementById("edit-form");
-    const editTitle = document.getElementById("edit-title");
-    const editContent = document.getElementById("edit-content");
-    const editLabel = document.getElementById("edit-label");
-    const editMood = document.getElementById("edit-mood");
-    const editIcon = document.getElementById("edit-icon");
-    const cancelBtn = document.getElementById("cancel-edit-btn");
-
-    function renderNoteDetail() {
-      note = JSON.parse(localStorage.getItem("notes-list") || "[]").find(n => n.id === id);
-      if (note) {
-        noteTitle.textContent = note.title;
-        noteContent.textContent = note.content;
-        noteIcon.textContent = note.icon||'📝';
-        noteMeta.innerHTML = `
-          <span class="note-date" title="Dibuat">${formatDateISO(note.createdAt)}</span>
-          <span class="note-date" title="Terakhir diedit">Edit: ${formatDateISO(note.lastEdit||note.createdAt)}</span>
-          <span class="note-mood" title="Mood">${note.mood==="smile"?"😄":note.mood==="flat"?"😐":note.mood==="sad"?"😢":"❔"}</span>
-          ${note.label?`<span class="note-label label-${note.label}">${note.label==="important"?"Penting":note.label==="medium"?"Medium":"Santai"}</span>`:""}
-        `;
-        editBtn.style.display = "";
-      } else {
-        noteTitle.textContent = "Catatan tidak ditemukan";
-        noteContent.textContent = "";
-        editBtn.style.display = "none";
-      }
-      noteDetail.style.display = "";
-      noteEdit.style.display = "none";
-    }
-
-    function renderNoteEdit() {
-      if (!note) return;
-      editTitle.value = note.title;
-      editContent.value = note.content;
-      editLabel.value = note.label||'medium';
-      editMood.value = note.mood||'flat';
-      editIcon.value = note.icon||"📝";
-      noteDetail.style.display = "none";
-      noteEdit.style.display = "";
-      editTitle.focus();
-    }
-
-    editBtn.onclick = function() {
-      renderNoteEdit();
-    };
-    cancelBtn.onclick = function() {
-      renderNoteDetail();
-    };
-
-    editForm.onsubmit = function(e) {
-      e.preventDefault();
-      note.title = editTitle.value.trim();
-      note.content = editContent.value;
-      note.icon = editIcon.value||'📝';
-      note.label = editLabel.value;
-      note.mood = editMood.value;
-      note.lastEdit = Date.now();
-      notes = notes.map(n => n.id === id ? note : n);
-      localStorage.setItem("notes-list", JSON.stringify(notes));
-      renderNoteDetail();
-      document.title = note.title;
-      showSnackbar("Tersimpan!");
-    };
-
-    if (note) {
-      renderNoteDetail();
-      document.title = note.title;
+    const id = params.get('id');
+    let notes = loadNotes();
+    let note = notes.find(n=>n.id===id);
+    if(!note) {
+      document.querySelector('.note-detail-container').innerHTML = "<div style='padding:40px'>Catatan tidak ditemukan.</div>";
     } else {
-      renderNoteDetail();
+      // Isi form
+      document.getElementById('edit-icon').value = note.icon || "";
+      document.getElementById('edit-title').value = note.title;
+      // Convert HTML ul ke text list
+      let val = note.content;
+      if(val.match(/^<ul>/)) {
+        const temp = document.createElement('div'); temp.innerHTML = val;
+        val = Array.from(temp.querySelectorAll('li')).map(li=>li.textContent).join('\n');
+      }
+      document.getElementById('edit-content').value = val;
+      document.getElementById('edit-label').value = note.label||"";
+      document.getElementById('note-detail-date').textContent = "Ditulis: "+formatTanggal(note.date);
     }
+    // Simpan perubahan
+    document.getElementById('note-edit-form').onsubmit = function(e) {
+      e.preventDefault();
+      let icon = document.getElementById('edit-icon').value.trim();
+      let title = document.getElementById('edit-title').value.trim();
+      let content = document.getElementById('edit-content').value.trim();
+      let label = document.getElementById('edit-label').value.trim();
+      let htmlContent = content.includes('\n')?'<ul>'+content.split('\n').map(x=>`<li>${x}</li>`).join('')+'</ul>':content;
+      note.icon = icon;
+      note.title = title;
+      note.content = htmlContent;
+      note.label = label;
+      saveNotes(notes);
+      alert("Catatan telah disimpan!");
+      window.location.href="index.html";
+    };
+    // Batal
+    document.getElementById('cancel-edit').onclick = function(e){
+      if(confirm("Batal edit?")) window.location.href="index.html";
+    };
+    // Back: set flag agar home tidak animasi
+    document.getElementById('back-link').onclick = function(e){
+      sessionStorage.setItem('skipIntro','1');
+    };
   </script>
 </body>
 </html>
