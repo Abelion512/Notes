@@ -30,27 +30,35 @@ window.addEventListener('DOMContentLoaded', ()=>{
   }, 40);
 });
 
-// --- Data dummy (bisa diubah localStorage/real CRUD) ---
+// --- Data dummy (replace with localStorage for persistent) ---
 let notes = [
   {
+    id: "1",
     icon: "⭐", title: "Rencana Bulan Juni",
     content: "<ul><li>Fokus UTBK</li><li>Kerjakan <i>proyek FocusTimerin</i></li><li>Belajar AI &amp; UI/UX</li></ul>",
-    date: "2025-06-15"
+    date: "2025-06-15",
+    pinned: true
   },
   {
+    id: "2",
     icon: "", title: "Matematika",
     content: "<ul><li>Diskusi di sesi tutor</li></ul>",
-    date: "2025-06-12"
+    date: "2025-06-12",
+    pinned: false
   },
   {
+    id: "3",
     icon: "⚡", title: "Ide Aplikasi",
     content: "<ul><li>Task manager untuk mahasiswa</li></ul>",
-    date: "2025-06-08"
+    date: "2025-06-08",
+    pinned: false
   },
   {
+    id: "4",
     icon: "", title: "To-Do Harian",
     content: "<ul><li>Olahraga pagi</li><li>Review materi</li></ul>",
-    date: "2025-06-05"
+    date: "2025-06-05",
+    pinned: false
   },
 ];
 
@@ -62,7 +70,7 @@ const moods = [
   {day:"Min",emoji:"😄"}
 ];
 
-// --- Mood Graph harian (selalu center) ---
+// --- Mood Graph harian (centered) ---
 function renderMoodGraph() {
   let el = document.getElementById("mood-graph");
   el.innerHTML = moods.map(m=>`
@@ -80,19 +88,66 @@ function formatTanggal(tglStr) {
   return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// --- Notes Card (ramping, center, tidak bisa diklik) ---
+// --- Notes Card (klik = ke note.html?id=..., ada pin/delete) ---
 function renderNotes() {
   let grid = document.getElementById("notes-grid");
-  grid.innerHTML = notes.map(n=>`
-    <div class="note-card">
-      <div class="note-title">${n.icon?`<span class="icon">${n.icon}</span>`:""}${n.title}</div>
+  // Sort pinned di atas, lalu urut tanggal desc
+  let sorted = [...notes].sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return new Date(b.date) - new Date(a.date);
+  });
+  grid.innerHTML = sorted.map(n=>`
+    <div class="note-card" data-id="${n.id}" tabindex="0" role="link">
+      <div class="note-title">
+        ${n.icon?`<span class="icon">${n.icon}</span>`:""}${n.title}
+      </div>
       <div class="note-content">${n.content}</div>
       <div class="note-date">Ditulis: ${formatTanggal(n.date)}</div>
+      <div class="note-actions" style="position:absolute;top:13px;right:14px;z-index:2;">
+        <button class="action-btn pin${n.pinned?' pin':''}" data-action="pin" title="Pin/Unpin">${n.pinned?'📌':'📍'}</button>
+        <button class="action-btn delete" data-action="delete" title="Hapus">🗑️</button>
+      </div>
     </div>
   `).join("");
+
+  // Attach events
+  grid.querySelectorAll('.note-card').forEach(card => {
+    // Card click: redirect to note.html?id=...
+    card.onclick = function(e) {
+      // If action button is clicked, don't trigger card click
+      if(e.target.classList.contains('action-btn')) return;
+      window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
+    };
+    // Keyboard accessibility
+    card.onkeydown = function(e) {
+      if(e.key==='Enter' || e.key===' ') {
+        window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
+      }
+    };
+    // Pin/Delete events
+    card.querySelectorAll('.action-btn').forEach(btn => {
+      btn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = card.getAttribute('data-id');
+        const idx = notes.findIndex(n=>n.id===id);
+        if(idx<0) return;
+        const note = notes[idx];
+        if(this.dataset.action==="pin") {
+          note.pinned = !note.pinned;
+        } else if(this.dataset.action==="delete") {
+          if(confirm('Hapus catatan ini?')) {
+            notes.splice(idx,1);
+          }
+        }
+        renderNotes();
+      }
+    });
+  });
 }
 
-// --- About Modal (nav About Me mirip ifal.me) ---
+// --- About Modal (nav About Me) ---
 const aboutModal = document.getElementById("about-modal");
 document.getElementById("nav-about").onclick = function(e) {
   e.preventDefault();
@@ -120,7 +175,14 @@ document.getElementById('add-note-btn').onclick = function() {
   let htmlList = lines.length > 1 ? '<ul>' + lines.map(x=>`<li>${x}</li>`).join('') + '</ul>' : content;
   let now = new Date();
   let tgl = now.toISOString().slice(0,10);
-  notes.unshift({icon,title,content:htmlList,date:tgl});
+  notes.unshift({
+    id: String(Date.now()),
+    icon,
+    title,
+    content: htmlList,
+    date: tgl,
+    pinned: false
+  });
   renderNotes();
 };
 
