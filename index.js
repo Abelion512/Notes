@@ -9,43 +9,6 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// --- Theme & Branding ---
-const THEMES = ["cream","blue","pink","dark"];
-function setTheme(theme) {
-  if(!THEMES.includes(theme)) theme = "cream";
-  document.body.classList.remove(...THEMES.map(t=>"theme-"+t));
-  document.body.classList.add("theme-"+theme);
-  localStorage.setItem("abelion-theme", theme);
-  document.querySelectorAll('.theme-btn').forEach(btn=>{
-    btn.classList.toggle('selected', btn.dataset.theme === theme);
-  });
-}
-function initTheme() {
-  let theme = localStorage.getItem("abelion-theme") || "cream";
-  setTheme(theme);
-  document.querySelectorAll('.theme-btn').forEach(btn=>{
-    btn.onclick = ()=>setTheme(btn.dataset.theme);
-  });
-}
-
-// --- Quotes random ---
-const QUOTES = [
-  "Menulis adalah cara otak bernapas.",
-  "Catatan kecil, langkah besar.",
-  "Progres hari ini lebih baik dari kemarin.",
-  "Jangan takut gagal, takutlah kalau tidak mencoba.",
-  "Tuliskan idemu, jangan biarkan hilang.",
-  "Sukses berawal dari satu catatan.",
-  "Gagal sekali, sukses seribu kali.",
-  "Tidak ada ide yang sia-sia.",
-  "Catat. Pahami. Eksekusi.",
-  "Belajar bukan untuk siapa-siapa, tapi untuk diri sendiri."
-];
-function showRandomQuote() {
-  const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  document.getElementById('random-quote').textContent = q;
-}
-
 // --- Notes: localStorage
 const LS_KEY = 'abelion-notes-v2';
 function loadNotes() {
@@ -56,6 +19,8 @@ function loadNotes() {
 function saveNotes() {
   localStorage.setItem(LS_KEY, JSON.stringify(notes));
 }
+
+// Tidak ada notes dummy untuk pengguna baru!
 let notes = loadNotes();
 
 // Mood harian dummy
@@ -103,7 +68,7 @@ function renderSearchBar() {
   }
 }
 
-// --- Notes Card (klik ke note.html?id=..., pin/delete/copy interaktif, search) ---
+// --- Notes Card (klik ke note.html?id=..., pin/delete interaktif, search) ---
 function renderNotes() {
   let grid = document.getElementById("notes-grid");
   if (!notes.length) {
@@ -130,9 +95,6 @@ function renderNotes() {
         <button class="action-btn pin${n.pinned?' pin-active':''}" data-action="pin" title="Pin/Unpin" aria-label="Pin/Unpin catatan">
           <span class="pin-inner">${n.pinned?'📌':'📍'}</span>
         </button>
-        <button class="action-btn copy-btn" data-action="copy" title="Copy" aria-label="Copy catatan">
-          <span>📋</span>
-        </button>
         <button class="action-btn delete" data-action="delete" title="Hapus" aria-label="Hapus catatan">
           <span class="delete-inner">🗑️</span>
         </button>
@@ -147,6 +109,7 @@ function renderNotes() {
 
   // Interaktif event
   grid.querySelectorAll('.note-card').forEach(card => {
+    // Card click: redirect to note.html?id=...
     card.addEventListener('click', function(e) {
       if(e.target.closest('.action-btn')) return;
       window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
@@ -156,6 +119,7 @@ function renderNotes() {
         window.location.href = `note.html?id=${card.getAttribute('data-id')}`;
       }
     };
+    // Pin/Delete
     card.querySelectorAll('.action-btn').forEach(btn => {
       btn.onclick = function(e) {
         e.preventDefault();
@@ -170,25 +134,13 @@ function renderNotes() {
           this.querySelector('.pin-inner').animate([
             {transform:'scale(1.2)'},{transform:'scale(1)'}
           ],{duration:200});
-          renderNotes();
-        } else if(this.dataset.action==="copy") {
-          // Copy: judul + isi plain text
-          const temp = document.createElement('textarea');
-          temp.value = (note.icon?note.icon+" ":"") + note.title + "\n\n" + note.content.replace(/<[^>]+>/g, '');
-          document.body.appendChild(temp);
-          temp.select();
-          document.execCommand("copy");
-          temp.remove();
-          btn.blur();
-          btn.innerHTML = "✅";
-          setTimeout(()=>{ btn.innerHTML = "📋"; }, 1000);
         } else if(this.dataset.action==="delete") {
           if(confirm('Hapus catatan ini?')) {
             notes.splice(idx,1);
             saveNotes();
-            renderNotes();
           }
         }
+        renderNotes();
       }
     });
   });
@@ -235,10 +187,6 @@ document.getElementById('add-note-btn').onclick = function() {
 // --- Entrance: skip animasi jika dari note.html (back) ---
 window.addEventListener('DOMContentLoaded', ()=>{
   renderMoodGraph(); renderSearchBar(); renderNotes();
-  showRandomQuote();
-  initTheme();
-  // Staggered fade-in
-  setTimeout(()=>document.body.classList.add('loaded'), 300);
   if(sessionStorage.getItem('skipIntro')) {
     document.getElementById('intro-anim').style.display = 'none';
     document.getElementById('main-content').classList.remove('hidden');
