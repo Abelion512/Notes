@@ -1,11 +1,22 @@
-// --- Animasi Intro 0-100% lalu fade out ---
+// --- Live time pojok kanan atas ---
+function updateTime() {
+  const el = document.getElementById('top-time');
+  if (!el) return;
+  const now = new Date();
+  const pad = n => n.toString().padStart(2, '0');
+  el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// --- Animasi Intro 0-100% slow, fade out ---
 window.addEventListener('DOMContentLoaded', ()=>{
   let p = 0;
   const pt = document.getElementById('progress-text');
   const intro = document.getElementById('intro-anim');
   const main = document.getElementById('main-content');
   let interval = setInterval(()=>{
-    p = Math.min(100,p+Math.floor(Math.random()*11+2));
+    p = Math.min(100, p+Math.floor(Math.random()*7+1));
     pt.textContent = p+"%";
     if(p>=100){
       clearInterval(interval);
@@ -13,13 +24,13 @@ window.addEventListener('DOMContentLoaded', ()=>{
       setTimeout(()=>{
         intro.style.display="none";
         main.classList.remove('hidden');
-        setTimeout(()=>document.querySelector('.title-abelion').classList.add('animated'),50);
-      },700);
+        setTimeout(()=>document.querySelector('.title-abelion').classList.add('animated'),100);
+      },1300);
     }
-  }, 32);
+  }, 40);
 });
 
-// --- Data dummy (bisa diganti localStorage, dsb) ---
+// --- Data dummy (bisa diubah localStorage/real CRUD) ---
 let notes = [
   {
     icon: "⭐", title: "Rencana Bulan Juni",
@@ -51,7 +62,7 @@ const moods = [
   {day:"Min",emoji:"😄"}
 ];
 
-// --- Mood Graph harian ---
+// --- Mood Graph harian (selalu center) ---
 function renderMoodGraph() {
   let el = document.getElementById("mood-graph");
   el.innerHTML = moods.map(m=>`
@@ -69,7 +80,7 @@ function formatTanggal(tglStr) {
   return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// --- Notes Card ---
+// --- Notes Card (ramping, center, tidak bisa diklik) ---
 function renderNotes() {
   let grid = document.getElementById("notes-grid");
   grid.innerHTML = notes.map(n=>`
@@ -81,7 +92,24 @@ function renderNotes() {
   `).join("");
 }
 
-// --- Tambah catatan baru (Dummy, bisa diubah localStorage/real CRUD) ---
+// --- About Modal (nav About Me mirip ifal.me) ---
+const aboutModal = document.getElementById("about-modal");
+document.getElementById("nav-about").onclick = function(e) {
+  e.preventDefault();
+  aboutModal.classList.add("show");
+};
+document.getElementById("about-close").onclick = function() {
+  aboutModal.classList.remove("show");
+};
+document.getElementById("nav-home").onclick = function(e) {
+  e.preventDefault();
+  aboutModal.classList.remove("show");
+};
+window.onclick = function(e) {
+  if(e.target === aboutModal) aboutModal.classList.remove("show");
+};
+
+// --- Tambah catatan baru (dummy) ---
 document.getElementById('add-note-btn').onclick = function() {
   let title = prompt("Judul catatan:");
   if(!title) return;
