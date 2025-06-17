@@ -147,6 +147,13 @@ body {
 .about-abelink { display: flex; flex-direction:row; gap:17px; align-items:center;}
 .about-text { flex:1;}
 .about-img { width: 46px; border-radius: 12px;}
+.profile-mini-nav {
+  display: flex; align-items: center; gap: 7px;
+  text-decoration: none; color: #2070ea; font-weight: 500;
+}
+.profile-mini-nav img {
+  width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid #aad8ff;
+}
 /* Nav bottom */
 .nav-bottom {
   position: fixed; left:0; bottom:0; width:100vw; background: #fff;
