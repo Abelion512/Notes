@@ -146,7 +146,7 @@ function renderNotes() {
   });
 }
 
-// --- About Modal (nav About Me) ---
+// --- About Modal (nav About) ---
 const aboutModal = document.getElementById("about-modal");
 document.getElementById("nav-about").onclick = function(e) {
   e.preventDefault();
@@ -162,6 +162,14 @@ document.getElementById("nav-home").onclick = function(e) {
 window.onclick = function(e) {
   if(e.target === aboutModal) aboutModal.classList.remove("show");
 };
+// Di index.js
+function showMiniProfile() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem('abelion-profile')) || {}; } catch { data = {}; }
+  document.getElementById('profile-mini-avatar').src = data.photo || 'default-avatar.png';
+  document.getElementById('profile-mini-name').textContent = data.name || 'Profile';
+}
+window.addEventListener('DOMContentLoaded', showMiniProfile);
 // --- Tambah catatan baru ---
 document.getElementById('add-note-btn').onclick = function() {
   let title = prompt("Judul catatan:");
