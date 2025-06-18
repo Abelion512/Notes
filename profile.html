@@ -5,18 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Profil - Abelion Notes</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
     :root {
-      --bg-main: #f8faff;
-      --bg-card: #fff;
-      --color-primary: #1785ff;
-      --color-primary-dark: #1663ce;
-      --color-text: #212f45;
-      --color-label: #252f47;
-      --color-soft: #f6faff;
-      --border-radius: 23px;
-      --shadow: 0 8px 38px #1e5cff14, 0 1.5px 8px #0001;
+      --bg-main: #101825;
+      --bg-card: #161f2c;
+      --color-primary: #39b2ff;
+      --color-primary-dark: #1785ff;
+      --color-secondary: #7df;
+      --color-text: #eaffff;
+      --color-label: #b0e2ff;
+      --color-soft: #182331;
+      --border-radius: 22px;
+      --shadow: 0 8px 38px #39b2ff22, 0 1.5px 8px #0003;
+      --badge-active: linear-gradient(90deg,#3df 10%,#39f 80%);
+      --badge-diligent: linear-gradient(90deg,#ffce70 10%,#fc7 80%);
+      --font-main: 'Inter', Arial, sans-serif;
     }
+    /* Themes */
     [data-theme="sky"] {
       --bg-main: #eaf6ff;
       --bg-card: #fafdff;
@@ -65,66 +71,75 @@
     html, body {
       background: var(--bg-main);
       min-height: 100vh;
-      font-family: 'Inter', Arial, sans-serif;
+      font-family: var(--font-main);
       color: var(--color-text);
-      transition: background .25s;
+      transition: background .3s;
     }
     .profile-wrap {
       min-height: 100vh; display:flex; align-items:center; justify-content:center;
+      padding: 3vw 0;
     }
     .profile-card {
       background: var(--bg-card);
-      max-width: 450px;
+      max-width: 470px;
       width: 100%;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      padding: 34px 26px 28px 26px;
+      padding: 35px 28px 30px 28px;
       text-align: center;
-      margin: 44px 0;
+      margin: 30px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: background .25s;
+      position: relative;
+      transition: background .3s;
+      overflow: hidden;
     }
     .profile-avatar {
-      width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+      width: 97px; height: 97px; border-radius: 50%; object-fit: cover;
       border: 4px solid var(--color-primary);
-      margin-bottom: 16px;
-      background: #f0f4ff;
-      box-shadow: 0 2px 8px #e8f1ff55;
+      margin-bottom: 14px;
+      background: #232f3f;
+      box-shadow: 0 2px 8px #39b2ff22;
+      transition: border .25s;
+      cursor: pointer;
     }
     .profile-title {
       font-size: 1.45em; font-weight: bold; color: var(--color-primary);
-      margin-bottom: 2px;
+      margin-bottom: 3px;
       letter-spacing: -.01em;
     }
-    .profile-welcome { color: var(--color-label); margin-bottom: 18px; }
-    .profile-form-label { text-align:left; margin-bottom: 7px; font-weight:500; display:block;}
-    .profile-input, .profile-textarea {
-      width: 100%; max-width: 320px; font-size:1.08em;
-      padding: 11px; border-radius: 9px; border: 1.5px solid #d0e6ff;
-      margin-bottom: 18px; background: var(--color-soft); transition: border .15s, background .18s;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      color: var(--color-text);
+    .profile-greeting {
+      font-size:1.18em; color:var(--color-label); margin-bottom:20px;
+      font-weight:500; letter-spacing:0;
+      display: flex; align-items:center; justify-content:center; gap:7px;
+    }
+    .profile-form-label { text-align:left; margin-bottom: 7px; font-weight:600; display:block;}
+    .profile-input, .profile-textarea, .profile-theme-dropdown, .profile-fontsize-dropdown {
+      width: 100%; max-width: 320px; font-size:1.07em;
+      padding: 11px; border-radius: 9px; border: 1.5px solid #246fad33;
+      margin-bottom: 18px; background: var(--color-soft);
+      transition: border .18s, background .18s, color .15s;
+      display: block; color: var(--color-text);
+    }
+    .profile-input:focus, .profile-textarea:focus, .profile-theme-dropdown:focus, .profile-fontsize-dropdown:focus {
+      border-color: var(--color-primary);
     }
     .profile-textarea { min-height: 44px; resize:vertical;}
-    .profile-input:focus, .profile-textarea:focus { border-color: var(--color-primary);}
     .profile-upload-box {
       display: flex; flex-direction:column; align-items:center;
-      border: 2px dashed #b1d2ff; border-radius: 12px;
-      padding: 16px 10px 10px 10px; background: var(--color-soft); margin: 0 auto 16px auto;
-      max-width: 250px; transition: background .18s;
+      border: 2px dashed #39b2ff55; border-radius: 13px;
+      padding: 15px 10px 10px 10px; background: var(--color-soft); margin: 0 auto 18px auto;
+      max-width: 260px; transition: background .18s;
     }
     .profile-upload-label {
       display:inline-block; color: var(--color-primary); font-weight: 600; margin-top: 5px;
-      cursor: pointer; padding: 7px 18px; border-radius: 8px; background: #eaf4ff;
+      cursor: pointer; padding: 7px 18px; border-radius: 8px; background: #1a3247;
       transition: background .16s;
     }
-    .profile-upload-label:hover { background: #d8ecff; }
-    .profile-save-btn, .profile-logout-btn, .profile-reset-btn {
-      background: var(--color-primary); color: #fff; font-weight:600; border: none;
+    .profile-upload-label:hover { background: #203c5b; }
+    .profile-save-btn, .profile-reset-btn {
+      background: var(--color-primary); color: #fff; font-weight:700; border: none;
       padding: 13px 0; width: 100%; max-width: 320px; border-radius: 10px;
       font-size: 1.13em; box-shadow: 0 2px 12px #1785ff22;
       margin-top: 10px; cursor: pointer; transition: background .15s;
@@ -132,79 +147,132 @@
       margin-left: auto; margin-right: auto;
     }
     .profile-save-btn:hover { background: var(--color-primary-dark);}
-    .profile-logout-btn {
-      background: #e14b4b; margin-top:15px;
-    }
-    .profile-logout-btn:hover { background: #a91b1b;}
     .profile-reset-btn {
-      background: #bbb; color: #222; margin-top:12px;
+      background: #2d3540; color: #fff; margin-top:12px;
+      font-weight:500; font-size:1.08em;
     }
-    .profile-reset-btn:hover { background: #888; color: #fff;}
-    .profile-caption {font-size:0.96em; color:#888;}
+    .profile-reset-btn:hover { background: #c00; color: #fff;}
     .profile-section-title { 
-      font-size:1.10em;margin:15px 0 11px 0;font-weight:600;letter-spacing:0.04em;
+      font-size:1.12em;margin:19px 0 11px 0;font-weight:700;letter-spacing:0.04em;
       color: var(--color-primary);
+      text-align:left;
+      width:100%;
+      max-width:320px;
     }
-    .profile-theme-row {
-      margin-bottom: 14px; display: flex; gap:9px; align-items:center; justify-content:center;
+    .profile-theme-row, .profile-fontsize-row {
+      margin-bottom: 14px; display: flex; gap:9px; align-items:center; justify-content:flex-start;
+      width:100%; max-width:320px;
     }
-    .profile-theme-dropdown {
-      font-size:1em; padding:8px 17px; border-radius:9px; border:1.5px solid #d0e6ff; background:var(--color-soft); color:var(--color-text);
+    .profile-theme-dropdown, .profile-fontsize-dropdown {
       margin-left:7px; margin-bottom:0;
+      width:auto; min-width:110px;
     }
-    .profile-social-row {
-      display:flex; justify-content:center; gap:17px; margin-top:19px; margin-bottom:5px;
-    }
-    .profile-social-row a {
-      color: var(--color-primary); background: #f7fafd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-      font-size:1.30em; text-decoration:none; box-shadow:0 1.5px 8px #1785ff11; transition: background .13s, box-shadow .13s;
-    }
-    .profile-social-row a:hover { background: var(--color-primary); color: #fff; box-shadow:0 3px 18px #1785ff33;}
     .profile-checkbox-row {
       display:flex; align-items:center; gap:7px; justify-content: flex-start; margin-bottom:16px; margin-top: 5px;
-      font-size:1em;
+      font-size:1em; width:100%; max-width:320px;
     }
     .profile-checkbox-row input[type="checkbox"] { accent-color: var(--color-primary);}
     .profile-lang-row {
       display: flex; align-items: center; gap: 12px; margin-bottom: 15px;
-      justify-content: start;
+      justify-content: start; width:100%; max-width:320px;
     }
     .profile-lang-row select {
       font-size: 1em; padding: 7px 13px; border-radius: 8px; border: 1.5px solid #d0e6ff; background: var(--color-soft); color:var(--color-text);
     }
-    @media (max-width: 520px){
-      .profile-card {padding:18px 3vw 18px 3vw;}
-      .profile-wrap {padding: 0;}
+    .profile-social-row {
+      display:flex; justify-content:center; gap:17px; margin-top:17px; margin-bottom:6px;
+    }
+    .profile-social-row a {
+      color: var(--color-primary); background: #172a3d; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+      font-size:1.32em; text-decoration:none; box-shadow:0 1.5px 8px #1785ff11; transition: background .13s, box-shadow .13s;
+    }
+    .profile-social-row a:hover { background: var(--color-primary); color: #fff; box-shadow:0 3px 18px #1785ff33;}
+    .profile-caption {font-size:0.97em; color:#8ae;}
+    .profile-badges {
+      display:flex; gap:12px; justify-content:center; margin-bottom: 16px; margin-top:2px;
+    }
+    .profile-badge {
+      display:inline-flex; align-items:center; gap:4px;
+      padding: 4px 15px 4px 10px; border-radius: 17px;
+      font-size: .98em; font-weight:700; color: #fff;
+      background: var(--badge-active); box-shadow:0 1px 6px #fff2;
+      letter-spacing:0.01em;
+      transition: background .16s;
+    }
+    .profile-badge--diligent { background: var(--badge-diligent);}
+    .profile-stats {
+      display: flex; gap: 2vw; justify-content:center; margin: 17px 0 10px 0; flex-wrap: wrap;
+    }
+    .profile-stat {
+      background: #12213b99; border-radius: 12px; padding: 9px 14px;
+      min-width: 85px; text-align:center; color:var(--color-label);
+    }
+    .profile-stat-amt {
+      font-size:1.12em; font-weight:700; color:var(--color-primary);
+      animation: countUp 1.2s cubic-bezier(.5,2.2,.5,1);
+    }
+    @keyframes countUp {
+      0% { opacity:0; transform:translateY(10px);}
+      80%{ opacity:.7;}
+      100%{ opacity:1; transform:none;}
+    }
+    .profile-progress-bar {
+      width: 100%; max-width: 260px; height: 13px; background: #212e42; border-radius: 7px; margin: 0 auto 19px auto; overflow: hidden;
+      box-shadow: 0 2px 7px #39b2ff24;
+      position:relative;
+    }
+    .profile-progress-inner {
+      height: 100%; background: linear-gradient(90deg,#6df,#39b2ff 60%,#1785ff 100%);
+      border-radius:7px 0 0 7px; transition: width .65s cubic-bezier(.7,0,.3,1);
+      box-shadow: 0 1.5px 6px #4be4ff44;
+    }
+    .profile-progress-label {
+      font-size: .98em; color: var(--color-label); margin-bottom:3px;
+      text-align:center;
+    }
+    @media (max-width: 540px){
+      .profile-card {max-width:98vw; padding:14px 2vw 14px 2vw;}
+      .profile-wrap {padding:0;}
+      .profile-section-title,.profile-theme-row,.profile-fontsize-row,.profile-lang-row,.profile-checkbox-row {max-width:100vw;}
     }
   </style>
 </head>
 <body>
   <div class="profile-wrap">
-    <div class="profile-card">
-      <img src="https://ui-avatars.com/api/?name=Abelion&background=1785ff&color=fff&size=128" alt="Foto Profil" class="profile-avatar" id="profile-avatar"/>
+    <div class="profile-card" id="profile-card">
+      <img src="https://ui-avatars.com/api/?name=Abelion&background=1785ff&color=fff&size=128" alt="Foto Profil" class="profile-avatar" id="profile-avatar" title="Klik untuk ubah foto"/>
       <form id="profile-form" autocomplete="off">
-        <div class="profile-title">Profil</div>
-        <div class="profile-welcome" id="profile-welcome"></div>
-        <div class="profile-section-title">Identitas Diri</div>
-        <label class="profile-form-label" for="profile-name">Nama Lengkap:</label>
+        <div class="profile-greeting" id="profile-greeting">
+          Halo, <span id="profile-greet-name">Abelion</span> <span id="profile-greet-emoji">👋</span>
+        </div>
+        <div class="profile-badges" id="profile-badges"></div>
+        <div class="profile-section-title">Identitas Pengguna</div>
+        <label class="profile-form-label" for="profile-name">Nama Pengguna:</label>
         <input type="text" id="profile-name" class="profile-input" required maxlength="40"/>
-        <label class="profile-form-label" for="profile-bio">Bio Singkat (opsional):</label>
-        <textarea id="profile-bio" class="profile-textarea" maxlength="90" placeholder="Ceritakan dirimu dalam 1-2 kalimat..."></textarea>
+        <label class="profile-form-label" for="profile-bio">Bio singkat (opsional):</label>
+        <textarea id="profile-bio" class="profile-textarea" maxlength="90" placeholder="1-2 kalimat tentang kamu..."></textarea>
         <div class="profile-upload-box">
           <input type="file" accept="image/*" id="profile-photo-input" style="display:none"/>
           <label for="profile-photo-input" class="profile-upload-label">Ubah Foto Profil</label>
-          <div class="profile-caption">Ukuran file maksimal 2MB. Format: JPG, PNG.</div>
+          <div class="profile-caption">Ukuran maksimal 2MB. JPG, PNG.</div>
         </div>
-        <div class="profile-section-title">Preferensi Pengguna</div>
+        <div class="profile-section-title">Preferensi Tampilan</div>
         <div class="profile-theme-row">
           <label for="profile-theme">Tema:</label>
           <select id="profile-theme" class="profile-theme-dropdown">
+            <option value="abelion">⚡ Abelion Mode</option>
             <option value="default">🌼 Default</option>
             <option value="sky">🌤 Sky Blue</option>
             <option value="lavender">💜 Lavender</option>
             <option value="bw">🖤 Black White</option>
             <option value="cream">🥛 Cream</option>
-            <option value="abelion">⚡ Abelion Mode</option>
+          </select>
+        </div>
+        <div class="profile-fontsize-row">
+          <label for="profile-fontsize">Font:</label>
+          <select id="profile-fontsize" class="profile-fontsize-dropdown">
+            <option value="normal">Normal</option>
+            <option value="large">Besar</option>
           </select>
         </div>
         <div class="profile-lang-row">
@@ -216,23 +284,76 @@
         </div>
         <div class="profile-checkbox-row">
           <input type="checkbox" id="profile-notif"/>
-          <label for="profile-notif" style="margin-bottom:0;">Aktifkan notifikasi harian</label>
+          <label for="profile-notif" style="margin-bottom:0;">Notifikasi motivasi harian</label>
         </div>
-        <div class="profile-section-title">Sosial Media</div>
+        <div class="profile-section-title">Sosial & Link</div>
         <div class="profile-social-row">
           <a href="https://github.com/Abelion512" target="_blank" title="GitHub"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577v-2.234c-3.338.726-4.033-1.415-4.033-1.415-.546-1.387-1.333-1.756-1.333-1.756-1.089-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.834 2.807 1.304 3.492.997.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.334-5.466-5.931 0-1.312.47-2.381 1.236-3.221-.123-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.019.005 2.047.138 3.004.404 2.291-1.553 3.297-1.23 3.297-1.23.653 1.653.241 2.873.118 3.176.77.84 1.235 1.909 1.235 3.221 0 4.609-2.804 5.628-5.476 5.921.429.371.813 1.102.813 2.222v3.293c0 .319.218.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
           <a href="https://linkedin.com/in/abelion" target="_blank" title="LinkedIn"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.29c-.96 0-1.5-.65-1.5-1.45 0-.81.56-1.45 1.54-1.45s1.5.64 1.51 1.45c0 .8-.56 1.45-1.55 1.45zm13.5 10.29h-3v-4.84c0-1.15-.41-1.93-1.43-1.93-.78 0-1.24.53-1.44 1.04-.08.21-.1.5-.1.79v4.94h-3s.04-8.01 0-9h3v1.27c.4-.62 1.12-1.51 2.73-1.51 1.99 0 3.48 1.3 3.48 4.09v5.15z"/></svg></a>
           <a href="https://instagram.com/abelion.dev" target="_blank" title="Instagram"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 1.366.062 2.633.332 3.608 1.308.975.975 1.246 2.242 1.308 3.608.058 1.265.069 1.645.069 4.849s-.012 3.584-.07 4.849c-.062 1.366-.332 2.633-1.308 3.608-.975.975-2.242 1.246-3.608 1.308-1.265.058-1.645.069-4.849.069s-3.584-.012-4.849-.07c-1.366-.062-2.633-.332-3.608-1.308-.975-.975-1.246-2.242-1.308-3.608C2.175 15.646 2.163 15.266 2.163 12s.012-3.584.07-4.849c.062-1.366.332-2.633 1.308-3.608C4.516 2.565 5.783 2.294 7.149 2.232c1.265-.058 1.645-.069 4.849-.069zm0-2.163C8.756 0 8.335.014 7.052.072 5.765.129 4.666.382 3.68 1.368c-.986.986-1.239 2.085-1.296 3.372C2.014 8.336 2 8.756 2 12c0 3.244.014 3.664.072 4.948.057 1.287.311 2.386 1.296 3.372.987.987 2.085 1.24 3.372 1.297 1.284.057 1.704.072 4.948.072s3.664-.015 4.948-.072c1.287-.058 2.386-.311 3.372-1.297.986-.986 1.239-2.085 1.297-3.372.057-1.284.072-1.704.072-4.948s-.015-3.664-.072-4.948c-.058-1.287-.311-2.386-1.297-3.372-.986-.986-2.086-1.239-3.372-1.297C15.664.014 15.244 0 12 0zm0 5.838a6.163 6.163 0 100 12.325 6.163 6.163 0 000-12.325zm0 10.163a3.999 3.999 0 110-7.997 3.999 3.999 0 010 7.997zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg></a>
           <a href="https://abelion.dev" target="_blank" title="Website"><svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M12 7.757a4.243 4.243 0 1 0 0 8.486 4.243 4.243 0 0 0 0-8.486zm0-5.757c-6.075 0-11 4.925-11 11s4.925 11 11 11 11-4.925 11-11-4.925-11-11-11zm0 20c-4.963 0-9-4.037-9-9s4.037-9 9-9 9 4.037 9 9-4.037 9-9 9z"/></svg></a>
         </div>
-        <button type="submit" class="profile-save-btn">Simpan Perubahan Akun</button>
+        <button type="submit" class="profile-save-btn">Simpan Profil</button>
       </form>
       <button class="profile-reset-btn" id="profile-reset">Reset Profil</button>
-      <button class="profile-logout-btn" id="profile-logout">Logout</button>
+      <div class="profile-section-title" style="margin-top:18px;">Statistik & Progress</div>
+      <div class="profile-progress-label" id="profile-progress-label">Progress aktif: 0%</div>
+      <div class="profile-progress-bar"><div class="profile-progress-inner" id="profile-progress-inner" style="width:0%"></div></div>
+      <div class="profile-stats" id="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-amt" id="stat-note-count">0</div>
+          <div>Catatan</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-amt" id="stat-active-days">0</div>
+          <div>Hari Aktif</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-amt" id="stat-last-login">-</div>
+          <div>Login Terakhir</div>
+        </div>
+      </div>
     </div>
   </div>
   <script>
-    // THEME MAP
+    // --- Util & Storage ---
+    const PROFILE_KEY = 'abelion-profile-v2';
+    const NOTES_KEY = 'abelion-notes-v2';
+    function loadProfile() { try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch { return {}; } }
+    function saveProfile(d) { localStorage.setItem(PROFILE_KEY, JSON.stringify(d)); }
+    function loadNotes() { try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; } catch { return []; } }
+    function plural(n, one, many) { return n===1 ? one : many;}
+    function formatDate(d) {
+      if(!d) return "-";
+      const dt = new Date(d);
+      return dt.getDate()+'/'+(dt.getMonth()+1)+'/'+dt.getFullYear();
+    }
+    // --- Greeting & emoji dinamis ---
+    function getGreeting(lang="id") {
+      const now = new Date(), h = now.getHours();
+      if(lang==="en") {
+        if(h<11) return "Good morning";
+        if(h<16) return "Good afternoon";
+        if(h<20) return "Good evening";
+        return "Good night";
+      }
+      if(h<11) return "Selamat pagi";
+      if(h<16) return "Selamat siang";
+      if(h<20) return "Selamat sore";
+      return "Selamat malam";
+    }
+    function getEmojiBadge(days) {
+      if(days>=21) return {emoji:"🏆", label:"Rajin", class:"profile-badge--diligent"};
+      if(days>=7) return {emoji:"🔥", label:"Aktif", class:""};
+      if(days>=1) return {emoji:"✨", label:"Newbie", class:""};
+      return null;
+    }
+    // --- Progress calculation ---
+    function calcProgress(days) {
+      if(days>=30) return 100;
+      return Math.min(100, Math.round(100*days/30));
+    }
+    // --- Theme map ---
     const THEME_MAP = {
       "default": "",
       "sky": "sky",
@@ -241,29 +362,60 @@
       "cream": "cream",
       "abelion": "abelion"
     };
-    // --- Load profile from localStorage ---
-    const PROFILE_KEY = 'abelion-profile';
-    function loadProfile() {
-      try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch { return {}; }
-    }
-    function saveProfile(data) {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
-    }
-    function applyTheme(theme) {
+    function applyTheme(theme, fontSize) {
       document.body.setAttribute('data-theme', THEME_MAP[theme] || "");
+      document.body.style.fontSize = fontSize==="large" ? "1.17em" : "1em";
     }
+    // --- Main rendering ---
     function showProfile() {
       const profile = loadProfile();
+      // Avatar, nama, bio
       document.getElementById('profile-name').value = profile.name || '';
       document.getElementById('profile-bio').value = profile.bio || '';
       document.getElementById('profile-avatar').src = profile.photo || 'https://ui-avatars.com/api/?name=Abelion&background=1785ff&color=fff&size=128';
-      document.getElementById('profile-welcome').innerHTML = profile.name ? `Selamat datang, <b>${profile.name}</b>!` : "Silakan lengkapi profil Anda";
-      document.getElementById('profile-theme').value = profile.theme || 'default';
+      // Tema, font, lang, notif
+      document.getElementById('profile-theme').value = profile.theme || 'abelion';
+      document.getElementById('profile-fontsize').value = profile.fontsize || 'normal';
       document.getElementById('profile-lang').value = profile.lang || 'id';
       document.getElementById('profile-notif').checked = !!profile.notif;
-      applyTheme(profile.theme || 'default');
+      // Greeting
+      const greetText = getGreeting(profile.lang || "id");
+      document.getElementById('profile-greet-name').textContent = profile.name || "Abelion";
+      document.getElementById('profile-greet-emoji').textContent = ["👋","✨","😊","🚀"][Math.floor(Math.random()*4)];
+      document.getElementById('profile-greeting').childNodes[0].textContent = greetText+", ";
+      // Badges
+      const days = profile.activeDays||1;
+      const badges = [];
+      const badge = getEmojiBadge(days);
+      if(badge) badges.push(`<div class="profile-badge ${badge.class}">${badge.emoji} ${badge.label}</div>`);
+      if(profile.notif) badges.push(`<div class="profile-badge">🔔 Notif ON</div>`);
+      document.getElementById('profile-badges').innerHTML = badges.join('');
+      // Theme & font
+      applyTheme(profile.theme||'abelion', profile.fontsize||'normal');
+      // Progress
+      const progress = calcProgress(days);
+      document.getElementById('profile-progress-label').textContent = `Progress aktif: ${progress}%`;
+      document.getElementById('profile-progress-inner').style.width = progress+"%";
+      // Statistik
+      const notes = loadNotes();
+      document.getElementById('stat-note-count').textContent = notes.length || 0;
+      document.getElementById('stat-active-days').textContent = days;
+      document.getElementById('stat-last-login').textContent = profile.lastLogin ? formatDate(profile.lastLogin) : "-";
     }
     showProfile();
+
+    // --- GSAP animasi masuk ---
+    window.onload = () => {
+      gsap.from("#profile-card", {y:60, opacity:0, duration:.85, ease:"power3.out"});
+      gsap.from(".profile-avatar", {scale:0.7, opacity:0, duration:1, delay:.1, ease:"back.out(1.7)"});
+      gsap.from(".profile-greeting", {x:-40, opacity:0, duration:.7, delay:.45});
+      gsap.from(".profile-badges", {y:-15, opacity:0, duration:.6, delay:.7});
+      gsap.from(".profile-section-title", {y:18, opacity:0, stagger:.13, duration:.6, delay:.55});
+      gsap.from(".profile-stats", {y:24, opacity:0, duration:.8, delay:1.1});
+    };
+
+    // --- Foto klik -> input file ---
+    document.getElementById('profile-avatar').onclick = ()=>document.getElementById('profile-photo-input').click();
 
     // --- Handle foto profil upload ---
     document.getElementById('profile-photo-input').addEventListener('change', function(e){
@@ -287,30 +439,38 @@
       let bio = document.getElementById('profile-bio').value.trim();
       let avatar = document.getElementById('profile-avatar').src;
       let theme = document.getElementById('profile-theme').value;
+      let fontsize = document.getElementById('profile-fontsize').value;
       let lang = document.getElementById('profile-lang').value;
       let notif = document.getElementById('profile-notif').checked;
-      let profile = loadProfile();
-      profile.name = name;
-      profile.bio = bio;
-      profile.photo = avatar;
-      profile.theme = theme;
-      profile.lang = lang;
-      profile.notif = notif;
+      let prev = loadProfile();
+      // Statistik aktif
+      let activeDays = prev.activeDays||1;
+      let joinDate = prev.joinDate||(new Date()).toISOString();
+      let lastLogin = (new Date()).toISOString();
+      // Aktifkan progress & badge: setiap kali simpan, hitung hari aktif
+      let today = (new Date()).toISOString().split("T")[0];
+      let lastActive = prev.lastActive||"";
+      if(lastActive!==today) activeDays++;
+      let profile = {name, bio, photo:avatar, theme, fontsize, lang, notif, activeDays, joinDate, lastActive:today, lastLogin};
       saveProfile(profile);
       showProfile();
+      gsap.fromTo("#profile-card",{scale:0.98},{scale:1, duration:.25, ease:"power1.inOut"});
       alert("Profil disimpan!");
     };
 
-    // --- Ubah tema langsung ---
+    // --- Ubah tema/fontsize langsung ---
     document.getElementById('profile-theme').addEventListener('change', function(){
-      let theme = this.value;
       let profile = loadProfile();
-      profile.theme = theme;
-      saveProfile(profile);
-      applyTheme(theme);
+      profile.theme = this.value;
+      saveProfile(profile); showProfile();
+    });
+    document.getElementById('profile-fontsize').addEventListener('change', function(){
+      let profile = loadProfile();
+      profile.fontsize = this.value;
+      saveProfile(profile); showProfile();
     });
 
-    // --- Reset profil ---
+    // --- Reset profil (hapus localStorage profil saja) ---
     document.getElementById('profile-reset').onclick = function() {
       if(confirm("Reset semua data profil?")) {
         localStorage.removeItem(PROFILE_KEY);
@@ -318,13 +478,16 @@
       }
     };
 
-    // --- Logout (clear all localStorage) ---
-    document.getElementById('profile-logout').onclick = function() {
-      if(confirm("Logout dan hapus semua data lokal?")) {
-        localStorage.clear();
-        window.location.reload();
-      }
-    };
+    // --- Catat login setiap buka profil ---
+    (function logLogin() {
+      let profile = loadProfile();
+      profile.lastLogin = (new Date()).toISOString();
+      saveProfile(profile);
+    })();
+
+    // --- Progress bar smooth on showProfile ---
+    // (Sudah pakai CSS transition & animasi GSAP di bagian lain)
+
   </script>
 </body>
 </html>
