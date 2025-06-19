@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Profil – Abelion Notes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
     :root {
       --abelion-blue-main: #1785ff;
       --abelion-blue-grad: linear-gradient(90deg, #39b2ff 0%, #1785ff 100%);
-      --abelion-blue-bg: #101e2d;
-      --abelion-card-bg: #121e2a;
+      --abelion-dark-bg: #101e2d;
+      --abelion-card-bg: #161e2c;
       --abelion-accent: #39b2ff;
       --abelion-accent-dark: #1785ff;
-      --abelion-soft: #19283b;
       --abelion-text: #eaffff;
       --abelion-label: #b0e2ff;
+      --abelion-soft: #18283b;
       --badge-locked: #22384b;
-      --footer-height: 54px;
-      --border-radius: 27px;
-      --shadow: 0 8px 38px #1e5cff28, 0 1.5px 8px #0002;
-      --btn-radius: 14px;
+      --footer-height: 56px;
+      --border-radius: 24px;
+      --shadow: 0 8px 38px #1785ff22, 0 1.5px 8px #0002;
+      --btn-radius: 15px;
       --transition: .18s cubic-bezier(.7,0,.3,1);
       --font-main: 'Inter', Arial, sans-serif;
     }
     html, body {
-      background: var(--abelion-blue-bg);
+      background: var(--abelion-dark-bg);
       min-height: 100vh;
       font-family: var(--font-main);
       color: var(--abelion-text);
@@ -34,7 +34,6 @@
       transition: background var(--transition);
       height: 100%;
     }
-    body, .container { height: 100vh; min-height: 100vh;}
     .container {
       min-height: 100vh;
       display: flex;
@@ -43,7 +42,7 @@
       justify-content: flex-start;
       position: relative;
       height: 100vh;
-      background: var(--abelion-blue-bg);
+      background: var(--abelion-dark-bg);
     }
     .profile-card {
       background: var(--abelion-card-bg);
@@ -51,15 +50,14 @@
       max-width: 410px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      padding: 35px 20px 65px 20px;
+      padding: 35px 22px 84px 22px;
       text-align: center;
-      margin: 38px 0 22px 0;
+      margin: 44px 0 18px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
       min-height: calc(100vh - 120px);
-      overflow: visible;
       z-index: 2;
     }
     .profile-nav {
@@ -70,159 +68,161 @@
     .nav-btn, .nav-info-btn {
       background: var(--abelion-blue-grad);
       color: #fff; border: none;
-      border-radius: 15px; padding: 7px 18px; font-weight: 600; font-size: .97em;
+      border-radius: 15px; padding: 7px 20px; font-weight: 700; font-size: 1em;
       cursor: pointer; outline: none; margin:0 2px; box-shadow:0 1.5px 8px #39b2ff18;
       transition: filter .14s;
+      letter-spacing: .01em;
+      font-family: var(--font-main);
     }
     .nav-btn:active, .nav-info-btn:active { filter:brightness(0.92);}
-    .profile-avatar-wrap { margin-top: 18px; margin-bottom: 16px; }
+    .profile-avatar-wrap { margin-top: 10px; margin-bottom: 14px; }
     .profile-avatar {
-      width: 94px; height: 94px; border-radius: 50%; object-fit: cover;
+      width: 88px; height: 88px; border-radius: 50%; object-fit: cover;
       border: 3.5px solid var(--abelion-accent);
       background: #101e2d;
-      cursor: pointer; transition: box-shadow .19s;
-      display: block; margin: 0 auto 7px auto;
-      position: relative; z-index: 2;
+      box-shadow: 0 2px 14px #39b2ff33;
+      margin: 0 auto 7px auto;
+      display: block;
     }
     .profile-avatar.empty {
-      background: #1d2c42;
+      background: #212d3a !important;
       border: 3.5px solid #22384b;
       box-shadow: none;
     }
-    .profile-greeting {
-      font-size:1.15em; color:var(--abelion-label); margin-bottom:22px; font-weight:500;
-      margin-top:10px;
+    .profile-name-wrap {
+      margin-bottom: 6px;
+      display: flex; flex-direction: column; align-items: center;
     }
-    .level-title-row {
-      display: flex; justify-content:center; gap:12px; align-items:center; margin-bottom:14px;
+    .profile-name {
+      font-size: 1.33em;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 10px;
+      margin-bottom: 2px;
+      letter-spacing: 0.01em;
+      font-family: var(--font-main);
     }
-    .xp-title-btn, .xp-level-btn {
-      background: var(--abelion-blue-grad);
-      color: #fff; border: none;
-      border-radius: 15px; padding: 7px 19px; font-weight:700; font-size:1.03em;
-      letter-spacing:.01em; box-shadow:0 1.5px 8px #39b2ff18; margin:0;
-      cursor: pointer;
-      display:inline-flex; align-items:center; gap:8px;
+    .profile-badges {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 8px; margin-top: 3px;
     }
-    .xp-bar-label {
-      font-size:1.05em; color:var(--abelion-label); margin-bottom:2px; margin-top:7px;
-      letter-spacing: 0.01em; font-weight: 700;
+    .profile-badge {
+      background: #191e2d;
+      color: #bfe4ff;
+      font-size: .88em;
+      border-radius: 8px;
+      padding: 4px 13px;
+      font-weight: 700;
+      letter-spacing: .01em;
+      margin-right: 4px;
     }
-    /* XP Panel Abelion */
+    .profile-level {
+      background: #283e5c;
+      color: #eaffff;
+      font-size: .88em;
+      border-radius: 8px;
+      padding: 4px 13px;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
     .xp-panel {
-      background: #131d30;
-      border-radius: 19px;
-      box-shadow: 0 3px 24px #39b2ff22;
-      border: 1.6px solid #1785ff;
-      padding: 19px 16px 13px 16px;
+      background: #18283b;
+      border-radius: 15px;
+      box-shadow: 0 3px 24px #39b2ff18;
+      border: 1.2px solid #1785ff;
+      padding: 17px 13px 14px 13px;
+      width: 100%;
       max-width: 370px;
-      margin: 0 auto 26px auto;
+      margin: 14px auto 32px auto;
       color: #eaffff;
       position: relative;
-      display: flex; flex-direction: column; align-items: flex-start;
+      display: flex; flex-direction: column; align-items: stretch;
     }
     .xp-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      width: 100%;
-      gap: 10px;
-      margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: flex-start; gap: 9px;
+      margin-bottom: 13px;
     }
-    .xp-panel-icon { font-size: 1.24em; margin-right: 3px;}
-    .xp-panel-title { font-weight: 700; font-size: 1.12em; letter-spacing:0.01em;}
+    .xp-panel-icon { font-size: 1.19em; }
+    .xp-panel-title { font-weight: 700; font-size: 1.07em; letter-spacing:0.01em;}
     .xp-panel-xpnext {
       margin-left:auto; display: flex; align-items: center; gap:6px;
-      color: #7fd7ff; font-size: 1em; font-weight: 600;
+      color: #7fd7ff; font-size: 1em; font-weight: 700;
     }
-    .xp-bar-wrap { width: 100%; }
     .xp-bar {
-      background: #152842;
-      border-radius: 12px;
+      background: #0f1e30;
+      border-radius: 10px;
       width: 100%;
-      height: 18px;
+      height: 17px;
       position: relative;
       overflow: hidden;
-      margin-bottom: 7px;
-      margin-top:6px;
+      margin-bottom: 8px;
+      margin-top:2px;
     }
     .xp-bar-inner {
       position: absolute; left: 0; top: 0; height: 100%;
       background: var(--abelion-blue-grad);
-      border-radius: 12px 0 0 12px;
+      border-radius: 10px 0 0 10px;
       width: 0%;
       transition: width .7s cubic-bezier(.65,0,.35,1.06);
       z-index: 1;
     }
     .xp-bar-percent {
-      position: absolute; left: 14px; top: 50%;
+      position: absolute; left: 13px; top: 50%;
       transform: translateY(-50%);
-      font-weight: 800; color: #fff;
-      font-size: 1.03em;
+      font-weight: 800; color: #eaffff;
+      font-size: 1.04em;
       z-index: 2;
       text-shadow: 0 1px 6px #39b2ff99;
       letter-spacing: 0.01em;
       background: transparent;
-      min-width: 40px;
+      min-width: 34px;
       text-align: left;
     }
-    .xp-help-link {
-      display: block;
-      text-align: right;
-      font-size: .98em;
-      color: #39b2ff;
-      font-weight: bold;
-      text-decoration: none;
-      margin-top: 2px;
-      letter-spacing: 0.02em;
-    }
-    .xp-help-link:hover { text-decoration: underline; }
     .xp-countdown {
-      color:#89c6ff;
-      font-size: 1em;
+      color:#bfe4ff;
+      font-size: .97em;
       margin-bottom:0px;
       min-height:1em;
-      margin-top: 2px;
       letter-spacing:0.01em;
       text-align:right;
       width:100%;
       font-weight:600;
+      margin-top: 0;
     }
     .badge-panel {
-      background: #152842;
-      padding:15px 6px 14px 6px;
-      border-radius: 18px;
-      margin: 14px 0 40px 0;
+      background: #19283b;
+      padding:17px 6px 14px 6px;
+      border-radius: 15px;
+      margin: 13px 0 36px 0;
       display: flex; flex-direction: column; align-items:center;
-      box-shadow:0 2px 16px #5ecbff18;
+      box-shadow:0 2px 16px #39b2ff11;
       width:100%; max-width:290px;
       transition: background var(--transition);
-      min-height: 105px;
+      min-height: 92px;
       position:relative;
       z-index:2;
     }
     .badge-panel-title {
-      font-weight:700; margin-bottom:13px; font-size:1.09em; letter-spacing:0.01em;
-      color:#83cfff;
+      font-weight: 700; margin-bottom: 13px; font-size: 1.05em; letter-spacing:0.01em;
+      color: #8cd0ff;
     }
     .badges-row {
-      display: flex; gap:12px; justify-content:center; flex-wrap: wrap;
-      margin-bottom:0px; margin-top:4px;
+      display: flex; gap:11px; justify-content:center; flex-wrap: wrap;
+      margin-bottom:0; margin-top:4px;
       width:100%;
       z-index:2;
     }
     .badge-box {
-      width:48px; height:48px; background:var(--badge-locked);
-      border-radius: 16px; display:flex; align-items:center; justify-content:center;
-      font-size:1.6em; font-weight:700; color:#4c6b8e;
+      width:42px; height:42px; background:var(--badge-locked);
+      border-radius: 13px; display:flex; align-items:center; justify-content:center;
+      font-size:1.3em; font-weight:700; color:#4c6b8e;
       box-shadow:0 1px 10px #1112;
       cursor: pointer; transition: background .2s, transform .2s, color .2s;
-      border:2.2px solid transparent;
+      border:2px solid transparent;
       position:relative;
       z-index:2;
     }
     .badge-box--unlocked {
-      background: #182c46; color: #39b2ff; border-color: #39b2ff;
+      background: #1c334d; color: #39b2ff; border-color: #39b2ff;
     }
     .badge-box--active {
       border-color: #fffa67;
@@ -232,27 +232,14 @@
       transform:scale(1.10);
     }
     .badge-label {
-      position:absolute; bottom:-25px; left:50%; transform:translateX(-50%);
-      background:#213f77; color:#fff; border-radius:8px; font-size:.95em;
+      position:absolute; bottom:-22px; left:50%; transform:translateX(-50%);
+      background:#213f77; color:#fff; border-radius:8px; font-size:.93em;
       padding:3px 10px; white-space:nowrap; opacity:0; pointer-events:none;
       box-shadow:0 1px 8px #245ff333;
       transition:opacity .13s, bottom .13s;
       z-index:5;
     }
     .badge-box:hover .badge-label { opacity:1; bottom:-31px;}
-    .profile-btn-row {
-      display:flex; gap:16px; justify-content:center; margin:25px 0 0 0;
-      width:100%; max-width:330px;
-    }
-    .profile-btn {
-      background: var(--abelion-blue-grad); color:#fff; border:none;
-      border-radius: var(--btn-radius);
-      font-size:1em; font-weight:700;
-      padding:11px 0; width:100%; min-width:113px;
-      box-shadow:0 1.5px 8px #39b2ff18;
-      cursor:pointer; transition:filter .14s;
-    }
-    .profile-btn:active { filter:brightness(0.96);}
     .profile-footer {
       position: fixed;
       left: 0; right: 0; bottom: 0;
@@ -265,18 +252,17 @@
       user-select: none;
       font-weight: 500;
       letter-spacing: 0.01em;
-      font-size:1.04em;
+      font-size:1.03em;
     }
     @media (max-width: 540px){
       .profile-card {
-        padding: 14px 2vw 82px 2vw;
-        max-width: 98vw;
-        border-radius: 22px;
-        min-height: calc(100vh - 70px);
+        padding: 13px 2vw 64px 2vw;
+        max-width: 99vw;
+        border-radius: 19px;
+        min-height: calc(100vh - 90px);
       }
-      .profile-btn-row{ max-width: 99vw; flex-direction: column; gap: 13px; }
-      .badge-panel { max-width: 98vw; }
-      .xp-panel { max-width: 99vw;}
+      .badge-panel { max-width: 97vw; }
+      .xp-panel { max-width: 98vw;}
     }
   </style>
 </head>
@@ -290,31 +276,27 @@
       <div class="profile-avatar-wrap">
         <img src="" alt="Foto Profil" class="profile-avatar empty" id="profile-avatar"/>
       </div>
-      <div class="profile-greeting" id="profile-greeting">
-        Selamat pagi, <b id="profile-username">Abelion</b> 👋
+      <div class="profile-name-wrap">
+        <div class="profile-name" id="profile-username">Abelion</div>
       </div>
-      <div class="level-title-row">
-        <button class="xp-title-btn" id="xp-title-btn">🔧 Intermediate</button>
-        <button class="xp-level-btn" id="xp-level-btn">level 3</button>
+      <div class="profile-badges">
+        <span class="profile-badge">Member</span>
+        <span class="profile-level" id="profile-lvl">LV 3</span>
       </div>
-      <div class="xp-bar-label">XP Progress</div>
       <div class="xp-panel">
         <div class="xp-panel-header">
-          <span class="xp-panel-icon">🌙</span>
+          <span class="xp-panel-icon">⚡</span>
           <span class="xp-panel-title">Terus maju!</span>
           <span class="xp-panel-xpnext">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="#39b2ff" style="vertical-align:middle;"><path d="M13,2 L9,13 L15,13 L11,22 L21,9 L15,9 L19,2 L13,2 Z"></path></svg>
             <span id="xp-next">7 XP untuk naik</span>
           </span>
         </div>
-        <div class="xp-bar-wrap">
-          <div class="xp-bar">
-            <div class="xp-bar-inner" id="xp-bar-inner" style="width:100%"></div>
-            <span class="xp-bar-percent" id="xp-bar-percent">100%</span>
-          </div>
+        <div class="xp-bar">
+          <div class="xp-bar-inner" id="xp-bar-inner" style="width:100%"></div>
+          <span class="xp-bar-percent" id="xp-bar-percent">100%</span>
         </div>
         <div class="xp-countdown" id="xp-countdown">-7 XP untuk naik level</div>
-        <a href="#" class="xp-help-link" style="pointer-events:none;opacity:0.5;">CARA DAPATKAN XP</a>
       </div>
       <div class="badge-panel">
         <div class="badge-panel-title">Badge/Rank</div>
@@ -332,8 +314,7 @@
     </div>
   </div>
   <script>
-    // --- Dummy preview data ---
-    // (Integrasi nilai real XP/level dll pada versi dinamis)
+    // --- Dummy preview data (for demo only, integrasi dinamis di backend/frontend-mu)
     let xp = 30, level = 3, levelXP = 30, nextXP = 7;
     let percent = Math.max(0, Math.min(100, Math.round(100 * xp / levelXP)));
 
@@ -350,6 +331,7 @@
       });
       document.getElementById('xp-next').innerText = nextXP + " XP untuk naik";
       document.getElementById('xp-countdown').innerText = (nextXP>0?nextXP:-nextXP) + ' XP untuk naik level';
+      document.getElementById('profile-lvl').innerText = "LV "+level;
     }
     renderXPBar();
   </script>
