@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Profile – Abelion Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue1: #2f88ff;
+      --blue2: #7fd7ff;
+      --blue3: #a0bbff;
+      --blue-bg: #252f46;
+      --blue-card: #6cadf9;
+      --blue-grad: linear-gradient(120deg, #43c6ff 0%, #6cadf9 100%);
+      --blue-grad-dark: linear-gradient(120deg, #2f88ff 0%, #354d7f 100%);
+      --footer-height: 56px;
+      --border-radius: 36px;
+      --shadow: 0 8px 38px #2f88ff28, 0 1.5px 8px #0002;
+      --btn-radius: 18px;
+      --font-main: 'Inter', Arial, sans-serif;
+    }
+    html, body {
+      background: var(--blue-bg);
+      min-height: 100vh;
+      font-family: var(--font-main);
+      color: #fff;
+      padding: 0; margin: 0;
+      height: 100%;
+    }
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      background: var(--blue-bg);
+    }
+    .card {
+      background: var(--blue-card);
+      width: 100%;
+      max-width: 410px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 36px 20px 84px 20px;
+      text-align: center;
+      margin: 44px 0 18px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      min-height: calc(100vh - 120px);
+      z-index: 2;
+      overflow: visible;
+    }
+    .nav-head {
+      position: absolute; top: 18px; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items:center; z-index:5;
+      padding: 0 18px;
+    }
+    .nav-btn, .nav-info-btn {
+      background: var(--blue-grad-dark);
+      color: #fff; border: none;
+      border-radius: 15px; padding: 7px 20px; font-weight: 700; font-size: 1em;
+      cursor: pointer; outline: none; margin:0 2px; box-shadow:0 1.5px 8px #2f88ff18;
+      transition: filter .14s;
+      font-family: var(--font-main);
+      letter-spacing: .01em;
+    }
+    .avatar { width: 102px; height: 102px; background: #d0eaff; border-radius:50%; margin:0 auto 13px; object-fit:cover; box-shadow: 0 2px 14px #2f88ff33; border: 4px solid #fff;}
+    .avatar.empty { background: #eee; border: 4px solid #b2ceea;}
+    .edit-photo-label {
+      display:block; color: #2f88ff; background: #fff; font-weight:700;
+      border-radius: 99px; padding:9px 27px; font-size:1.12em; margin:0 auto 20px auto;
+      box-shadow:0 1px 5px #6cadf953;
+      cursor:pointer;
+      transition: filter .13s;
+    }
+    .edit-photo-label:hover { filter:brightness(0.97);}
+    .form-label {
+      text-align:left; font-weight:700; font-size:1.04em; color:#1b3556;
+      margin-bottom: 7px; margin-top: 15px; display: block;
+    }
+    .input, .textarea {
+      width: 100%; max-width: 320px;
+      padding: 11px; border-radius: 10px; border: 1.5px solid #5ecbff;
+      background: #e8f3fc;
+      margin-bottom: 18px; color: #222; font-size: 1.07em;
+      font-family: var(--font-main);
+      font-weight: 600;
+    }
+    .input:focus, .textarea:focus { border-color: #2f88ff;}
+    .desc {
+      font-size: 1.07em; color: #1b3556; margin: 15px 0 32px 0; text-align: left;
+      max-width: 330px;
+    }
+    .desc small { color:#3b5a9b;}
+    .badge-row {
+      display: flex; gap: 13px; justify-content:center; margin: 17px 0 19px 0;
+    }
+    .badge-box {
+      width:43px; height:43px; background:#e3e8f5;
+      border-radius: 13px; display:flex; align-items:center; justify-content:center;
+      font-size:1.36em; color:#458bfd;
+      border:2px solid #c1cffe;
+      font-weight: 700;
+      cursor: pointer;
+      transition: box-shadow .13s, border .13s, background .13s;
+    }
+    .badge-box--active { border:2px solid #ffd800; background: #fffae6; }
+    .btn-row {
+      display:flex; gap:18px; justify-content:center; margin:41px 0 0 0;
+      width:100%; max-width:340px;
+    }
+    .btn {
+      background: var(--blue-grad); color:#fff; border:none;
+      border-radius: var(--btn-radius);
+      font-size:1.04em; font-weight:700;
+      padding:13px 0; width:100%; min-width:133px;
+      box-shadow:0 1.5px 8px #39b2ff18;
+      cursor:pointer; transition:filter .14s;
+      font-family: var(--font-main);
+    }
+    .btn:active { filter:brightness(0.96);}
+    .footer {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: var(--footer-height);
+      line-height: var(--footer-height);
+      background: transparent;
+      text-align: center;
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+      font-weight: 500;
+      font-size:1.03em;
+      color:#e6f7ff;
+      letter-spacing: 0.01em;
+    }
+    @media (max-width: 540px){
+      .card { padding: 12px 2vw 85px 2vw; max-width: 99vw; border-radius: 19px; }
+      .btn-row{ max-width: 99vw; flex-direction: column; gap: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="nav-head">
+        <button class="nav-btn" onclick="window.history.back()">&lt; Back</button>
+        <button class="nav-info-btn" onclick="window.location.href='version-info.html'">Version info</button>
+      </div>
+      <img src="" alt="Foto Profil" class="avatar empty" id="profile-avatar"/>
+      <label class="edit-photo-label" for="photo-input">Edit photo</label>
+      <input type="file" accept="image/*" id="photo-input" style="display:none"/>
+      <label class="form-label" for="username">Username:</label>
+      <input class="input" type="text" id="username" placeholder="input your username"/>
+      <div class="desc">
+        Pilih Title (Badge/Rank aktif) yang ingin ditampilkan di profile<br>
+        <br>
+        <small>• Link Sosial user (IG, GitHub, dll)</small>
+      </div>
+      <div class="badge-row">
+        <div class="badge-box badge-box--active">🪜</div>
+        <div class="badge-box">🌿</div>
+        <div class="badge-box">🔧</div>
+        <div class="badge-box"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" style="background:#fff;color:#2f88ff;font-weight:700;" onclick="resetProfile()">reset profile</button>
+        <button class="btn" onclick="saveProfile()">save profile</button>
+      </div>
+      <div class="footer">
+        © 2025 Abelion Notes. All rights reserved.
+      </div>
+    </div>
+  </div>
+  <script>
+    // Demo: edit foto preview
+    document.querySelector('.edit-photo-label').onclick = ()=>document.getElementById('photo-input').click();
+    document.getElementById('photo-input').onchange = function(e){
+      let file = e.target.files[0];
+      if(!file) return;
+      let reader = new FileReader();
+      reader.onload = function(ev){
+        document.getElementById('profile-avatar').src = ev.target.result;
+        document.getElementById('profile-avatar').classList.remove("empty");
+      };
+      reader.readAsDataURL(file);
+    };
+    function resetProfile(){alert('Reset profile (demo only).');}
+    function saveProfile(){alert('Save profile (demo only).');}
+  </script>
+</body>
+</html>
