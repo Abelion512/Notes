@@ -10,17 +10,19 @@
     :root {
       --blue-gradient: linear-gradient(135deg,#5ecbff 0%,#4b7cf3 100%);
       --blue-gradient-rev: linear-gradient(135deg,#4b7cf3 0%,#5ecbff 100%);
-      --bg-main: #152235;
+      --bg-main: #141e2e;
       --bg-card: #5b91ea;
       --text-main: #fff;
       --text-sub: #bfe4ff;
       --border-radius: 36px;
       --shadow: 0 6px 36px #081c3d33, 0 1.5px 8px #0002;
-      --btn-radius: 16px;
-      --transition: .18s cubic-bezier(.7,0,.3,1);
+      --btn-radius: 18px;
+      --transition: .17s cubic-bezier(.7,0,.3,1);
       --font-main: 'Inter', Arial, sans-serif;
       --badge-locked: #dde4ee;
-      --footer-height: 42px;
+      --footer-height: 48px;
+      --xpbar-bg: #132f4b;
+      --xpbar-glow: #70c3ff55;
     }
     html, body {
       background: var(--bg-main);
@@ -33,33 +35,40 @@
     }
     body, .container { height: 100vh; min-height: 100vh;}
     .container {
-      min-height: 100vh; display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      padding: 0 0vw;
-      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
       position: relative;
+      height: 100vh;
+      background: var(--bg-main);
     }
     .profile-card {
       background: var(--bg-card);
-      width: 100%; max-width: 400px;
+      width: 100%;
+      max-width: 400px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      padding: 35px 20px 16px 20px;
+      padding: 35px 20px 44px 20px;
       text-align: center;
-      margin: 36px 0 22px 0;
-      display: flex; flex-direction: column; align-items: center;
+      margin: 38px 0 22px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       position: relative;
-      min-height: 83vh;
+      min-height: calc(100vh - 120px);
       overflow: visible;
-      transition: background var(--transition);
+      z-index: 2;
     }
     .profile-nav {
       position: absolute; top: 18px; left: 0; right: 0;
-      display: flex; justify-content: space-between; align-items:center; z-index:3;
+      display: flex; justify-content: space-between; align-items:center; z-index:5;
       padding: 0 18px;
     }
     .nav-btn, .nav-info-btn {
-      background: var(--blue-gradient); color: #fff; border: none;
+      background: var(--blue-gradient);
+      color: #fff; border: none;
       border-radius: 15px; padding: 7px 18px; font-weight: 600; font-size: .97em;
       cursor: pointer; outline: none; margin:0 2px; box-shadow:0 1.5px 8px #0b3a7f22;
       transition: filter .14s;
@@ -73,8 +82,7 @@
       background: #dde8f8;
       cursor: pointer; transition: box-shadow .19s;
       display: block; margin: 0 auto 7px auto;
-      position: relative;
-      z-index: 2;
+      position: relative; z-index: 2;
     }
     .profile-avatar.empty {
       background: #dde4ee;
@@ -99,56 +107,108 @@
     }
     .edit-photo-label:hover { background: #eaf3ff; color:#236de3;}
     .profile-greeting {
-      font-size:1.12em; color:var(--text-main); margin-bottom:15px; font-weight:500;
+      font-size:1.12em; color:var(--text-main); margin-bottom:19px; font-weight:500;
       margin-top:7px;
     }
     .level-title-row {
-      display: flex; justify-content:center; gap:8px; align-items:center; margin-bottom:10px;
+      display: flex; justify-content:center; gap:12px; align-items:center; margin-bottom:12px;
     }
     .xp-title-btn, .xp-level-btn {
-      background: var(--blue-gradient-rev); color: #fff; border: none;
+      background: var(--blue-gradient-rev);
+      color: #fff; border: none;
       border-radius: 16px; padding: 6px 18px; font-weight:600; font-size:1em;
       letter-spacing:.02em; box-shadow:0 1.5px 8px #1d5bcf22; margin:0;
       cursor:pointer; transition:filter .13s;
+      display:inline-flex; align-items:center; gap:8px;
     }
     .xp-title-btn:active, .xp-level-btn:active { filter:brightness(0.94);}
     .xp-bar-label {
-      font-size:.98em; color:var(--text-sub); margin-bottom:3px; margin-top:5px;
+      font-size:.98em; color:var(--text-sub); margin-bottom:3px; margin-top:7px;
+      letter-spacing: 0.01em; font-weight: 600;
+    }
+
+    /* XP PERSENTASE INSPIRASI: Awwwards/Obys style */
+    .xp-progress-outer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 12px;
+      margin-top: 6px;
+    }
+    .xp-progress-indicator {
+      display: flex; align-items: center;
+      gap: 9px; margin-bottom: 3px;
     }
     .xp-progress-percent {
-      font-size: 1.2em; font-weight: 800; color: #fff; margin-top: 8px; margin-bottom: 0;
-      letter-spacing: .02em; text-shadow: 0 2px 12px #4b7cf3aa;
+      font-size: 2.07em;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-shadow: 0 2px 12px #4b7cf3bb, 0 1px 16px #2a6cff33;
+      filter: drop-shadow(0 2px 12px #4b7cf3aa);
+      background: linear-gradient(93deg, #fff 60%, #5ecbff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: color .17s;
+      min-width: 70px;
+      text-align: right;
+      line-height: 1;
+    }
+    .xp-progress-label {
+      font-size: 1.08em;
+      font-weight: 600;
+      color: #bfe4ff;
+      margin-right: 2px;
+      letter-spacing: 0.03em;
+      opacity: .92;
     }
     .xp-bar {
-      width:100%; max-width:270px; height:16px; border-radius:9px;
-      background: #d1eaff; margin:0 auto 3px auto; overflow:hidden; position:relative;
-      box-shadow:0 1px 7px #39b2ff22;
+      width: 100%;
+      max-width: 260px;
+      height: 16px;
+      border-radius: 10px;
+      background: var(--xpbar-bg);
+      margin: 0 auto 3px auto;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 2px 18px var(--xpbar-glow);
     }
     .xp-bar-inner {
-      height:100%; background: var(--blue-gradient); border-radius:9px 0 0 9px;
-      width:0%; min-width:0; transition: width .7s cubic-bezier(.6,0,.4,1);
-      box-shadow: 0 1.5px 7px #4be4ff33;
+      height: 100%;
+      background: var(--blue-gradient);
+      border-radius: 10px 0 0 10px;
+      width: 0%;
+      min-width: 0;
+      transition: width .7s cubic-bezier(.6,0,.4,1);
+      box-shadow: 0 2px 14px #5ecbff44;
+      position: absolute; left:0; top:0;
     }
     .xp-countdown {
-      color:var(--text-sub); font-size: .93em; margin-bottom:10px;
+      color:var(--text-sub);
+      font-size: 1em;
+      margin-bottom:0px;
       min-height:1em;
+      margin-top: 4px;
+      letter-spacing:0.01em;
     }
     .badge-panel {
       background: var(--blue-gradient);
       padding:15px 6px 13px 6px;
-      border-radius: 20px;
-      margin: 18px 0 18px 0;
+      border-radius: 22px;
+      margin: 26px 0 44px 0;
       display: flex; flex-direction: column; align-items:center;
       box-shadow:0 2px 16px #5ecbff18;
       width:100%; max-width:290px;
       transition: background var(--transition);
+      min-height: 110px;
     }
     .badge-panel-title {
-      font-weight:700; margin-bottom:12px; font-size:1.1em; letter-spacing:0.01em;
+      font-weight:700; margin-bottom:12px; font-size:1.11em; letter-spacing:0.01em;
       text-shadow:0 1px 2px #155;
     }
     .badges-row {
-      display: flex; gap:12px; justify-content:center;
+      display: flex; gap:12px; justify-content:center; flex-wrap: wrap;
       margin-bottom:0px; margin-top:4px;
       width:100%;
     }
@@ -181,7 +241,7 @@
     }
     .badge-box:hover .badge-label { opacity:1; bottom:-31px;}
     .profile-btn-row {
-      display:flex; gap:16px; justify-content:center; margin:24px 0 10px 0;
+      display:flex; gap:16px; justify-content:center; margin:36px 0 0 0;
       width:100%; max-width:330px;
     }
     .profile-btn {
@@ -196,9 +256,10 @@
     .profile-footer {
       position: fixed;
       left: 0; right: 0; bottom: 0;
-      height: var(--footer-height); line-height: var(--footer-height);
-      text-align:center; color:#d4e6fa; font-size:.98em;
+      height: var(--footer-height);
+      line-height: var(--footer-height);
       background: transparent;
+      text-align: center;
       z-index: 10;
       pointer-events: none;
       user-select: none;
@@ -208,7 +269,7 @@
     /* Modal overlay & panel */
     .modal-overlay {
       display:none; position:fixed; z-index:99; top:0; left:0; width:100vw; height:100vh;
-      background:rgba(20,28,50,0.43); backdrop-filter: blur(2.5px);
+      background:rgba(20,28,50,0.47); backdrop-filter: blur(2.5px);
       align-items:center; justify-content:center;
       transition: opacity var(--transition);
     }
@@ -259,12 +320,13 @@
     .modal-version-list li {margin-bottom:8px;}
     @media (max-width: 540px){
       .profile-card {
-        border-radius: 30px; max-width:98vw; padding:14px 2vw 14px 2vw;
-        min-height: 93vh;
+        padding: 14px 2vw 70px 2vw;
+        max-width: 98vw;
+        border-radius: 30px;
+        min-height: calc(100vh - 80px);
       }
-      .badge-panel {max-width:98vw;}
-      .profile-btn-row{max-width:99vw;}
-      .modal-panel {max-width:99vw;}
+      .profile-btn-row{ max-width: 99vw; flex-direction: column; gap: 12px; }
+      .badge-panel { max-width: 98vw; }
     }
   </style>
 </head>
@@ -290,9 +352,14 @@
         <button class="xp-level-btn" id="xp-level-btn">level 1</button>
       </div>
       <div class="xp-bar-label">XP Progress</div>
-      <div class="xp-progress-percent" id="xp-progress-percent">0%</div>
-      <div class="xp-bar">
-        <div class="xp-bar-inner" id="xp-bar-inner" style="width:0%"></div>
+      <div class="xp-progress-outer">
+        <div class="xp-progress-indicator">
+          <div class="xp-progress-percent" id="xp-progress-percent">0%</div>
+          <div class="xp-progress-label">XP</div>
+        </div>
+        <div class="xp-bar">
+          <div class="xp-bar-inner" id="xp-bar-inner" style="width:0%"></div>
+        </div>
       </div>
       <div class="xp-countdown" id="xp-countdown">10 XP untuk naik level</div>
 
@@ -385,8 +452,20 @@
       // XP bar + percent
       let levelXP = getLevelXP(user.level||1);
       let xpPercent = Math.max(0, Math.min(100, Math.round(100*(user.xp||0)/levelXP)));
+      // Animate XP percent
+      let percentElem = document.getElementById('xp-progress-percent');
+      let prevPercent = parseInt(percentElem.getAttribute('data-prev')||'0',10);
+      gsap.to(percentElem, {
+        innerText: xpPercent,
+        duration: 0.8,
+        snap: "innerText",
+        onUpdate: function() {
+          percentElem.innerText = Math.round(this.targets()[0].innerText)+"%";
+        }
+      });
+      percentElem.setAttribute('data-prev', xpPercent);
+
       document.getElementById('xp-bar-inner').style.width = xpPercent+'%';
-      document.getElementById('xp-progress-percent').innerText = xpPercent+"%";
       document.getElementById('xp-countdown').innerText = (levelXP-(user.xp||0))+' XP untuk naik level';
       // Badges
       let badgesHTML = TITLES.map(t=>{
@@ -516,7 +595,6 @@
         </div>
       `);
     };
-
     // --- Animasi masuk ---
     window.onload = () => {
       render();
