@@ -12,7 +12,6 @@
       --blue-gradient-rev: linear-gradient(135deg,#4b7cf3 0%,#5ecbff 100%);
       --bg-main: #152235;
       --bg-card: #5b91ea;
-      --bg-card-dark: #3b5282;
       --text-main: #fff;
       --text-sub: #bfe4ff;
       --border-radius: 36px;
@@ -21,6 +20,7 @@
       --transition: .18s cubic-bezier(.7,0,.3,1);
       --font-main: 'Inter', Arial, sans-serif;
       --badge-locked: #dde4ee;
+      --footer-height: 42px;
     }
     html, body {
       background: var(--bg-main);
@@ -29,10 +29,15 @@
       color: var(--text-main);
       padding: 0; margin: 0;
       transition: background var(--transition);
+      height: 100%;
     }
+    body, .container { height: 100vh; min-height: 100vh;}
     .container {
-      min-height: 100vh; display:flex; align-items:center; justify-content:center;
+      min-height: 100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
       padding: 0 0vw;
+      height: 100vh;
+      position: relative;
     }
     .profile-card {
       background: var(--bg-card);
@@ -45,7 +50,7 @@
       display: flex; flex-direction: column; align-items: center;
       position: relative;
       min-height: 83vh;
-      overflow: hidden;
+      overflow: visible;
       transition: background var(--transition);
     }
     .profile-nav {
@@ -68,7 +73,23 @@
       background: #dde8f8;
       cursor: pointer; transition: box-shadow .19s;
       display: block; margin: 0 auto 7px auto;
+      position: relative;
+      z-index: 2;
     }
+    .profile-avatar.empty {
+      background: #dde4ee;
+      border: 3.5px solid #d1e1f0;
+      box-shadow: none;
+    }
+    .avatar-remove-btn {
+      display: block; background: #fff; color: #e14b4b;
+      border-radius: 999px; font-size: .97em;
+      padding: 4px 15px; border: none;
+      font-weight: 600; margin: 7px auto 0 auto;
+      box-shadow: 0 1px 6px #122;
+      cursor: pointer; transition: background .14s, color .14s;
+    }
+    .avatar-remove-btn:hover { background: #e14b4b; color: #fff;}
     .edit-photo-label {
       display:block; color: #2b326b; background: #fff; font-weight:700;
       border-radius: 99px; padding:5px 16px; font-size:.98em; margin:0 auto;
@@ -93,6 +114,10 @@
     .xp-title-btn:active, .xp-level-btn:active { filter:brightness(0.94);}
     .xp-bar-label {
       font-size:.98em; color:var(--text-sub); margin-bottom:3px; margin-top:5px;
+    }
+    .xp-progress-percent {
+      font-size: 1.2em; font-weight: 800; color: #fff; margin-top: 8px; margin-bottom: 0;
+      letter-spacing: .02em; text-shadow: 0 2px 12px #4b7cf3aa;
     }
     .xp-bar {
       width:100%; max-width:270px; height:16px; border-radius:9px;
@@ -157,7 +182,7 @@
     .badge-box:hover .badge-label { opacity:1; bottom:-31px;}
     .profile-btn-row {
       display:flex; gap:16px; justify-content:center; margin:24px 0 10px 0;
-      width:100%; max-width:330px; margin-bottom: 10px;
+      width:100%; max-width:330px;
     }
     .profile-btn {
       background: var(--blue-gradient); color:#fff; border:none;
@@ -165,18 +190,81 @@
       font-size:1em; font-weight:700;
       padding:10px 0; width:100%; min-width:113px;
       box-shadow:0 1.5px 8px #1d5bcf18;
-      margin-bottom: 15px;
       cursor:pointer; transition:filter .14s;
     }
     .profile-btn:active { filter:brightness(0.96);}
-    .profile-footer {position: absolute; margin-top: 10px; bottom: 12px; left:0; right:0; text-align:center; color:#d4e6fa; font-size:.98em;}
+    .profile-footer {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: var(--footer-height); line-height: var(--footer-height);
+      text-align:center; color:#d4e6fa; font-size:.98em;
+      background: transparent;
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    /* Modal overlay & panel */
+    .modal-overlay {
+      display:none; position:fixed; z-index:99; top:0; left:0; width:100vw; height:100vh;
+      background:rgba(20,28,50,0.43); backdrop-filter: blur(2.5px);
+      align-items:center; justify-content:center;
+      transition: opacity var(--transition);
+    }
+    .modal-overlay.active { display:flex; }
+    .modal-panel {
+      background: var(--bg-card); border-radius: 28px; box-shadow:0 10px 38px #1d5bcf33;
+      padding:30px 20px 25px 20px; width:100%; max-width:390px; margin:0 auto;
+      color:var(--text-main); position:relative;
+      display:flex; flex-direction:column; align-items:center;
+      min-height:360px; max-height:90vh; overflow-y:auto;
+    }
+    .modal-close-btn {
+      position:absolute; top:18px; right:16px; background:#fff; color:#2b326b;
+      border:none; border-radius:99px; font-size:.98em; font-weight:700; padding:6px 16px; cursor:pointer;
+      box-shadow:0 1px 5px #2b326b18;
+      transition: background .13s, color .13s;
+    }
+    .modal-close-btn:hover { background: #e14b4b; color: #fff;}
+    .modal-title {
+      font-size:1.16em; font-weight:700; margin-bottom:20px; letter-spacing:.01em;
+      color: var(--text-main);
+    }
+    .modal-form-label {
+      font-size:1em; font-weight:600; margin-bottom:7px; display:block; text-align:left;
+      color:#fff;
+    }
+    .modal-input, .modal-textarea {
+      font-size:1.05em; padding:9px 12px; border-radius:9px; border:1.5px solid #d1eaff;
+      background:#e6f8ff; color:#1a273b; margin-bottom:15px; width:100%; max-width:310px;
+      transition: border .13s;
+    }
+    .modal-input:focus, .modal-textarea:focus {border-color:#4b7cf3;}
+    .modal-btn-row {
+      display:flex; gap:12px; margin-top:15px; justify-content:center;
+      width:100%;
+    }
+    .modal-btn {
+      background: var(--blue-gradient); color:#fff; border:none; border-radius: 13px;
+      font-size:1em; font-weight:700; padding:9px 0; width:100%; min-width:90px;
+      box-shadow:0 1.5px 8px #1d5bcf13;
+      cursor:pointer; transition:filter .13s;
+    }
+    .modal-btn:active { filter:brightness(0.97);}
+    .modal-version-list {
+      text-align:left; color:#fff; font-size:.97em; margin-top:0px; margin-bottom:0;
+      padding-left:0;
+    }
+    .modal-version-list li {margin-bottom:8px;}
     @media (max-width: 540px){
       .profile-card {
-        border-radius: 30px; max-width:97vw; padding:18px 2vw 18px 2vw;
+        border-radius: 30px; max-width:98vw; padding:14px 2vw 14px 2vw;
         min-height: 93vh;
       }
       .badge-panel {max-width:98vw;}
       .profile-btn-row{max-width:99vw;}
+      .modal-panel {max-width:99vw;}
     }
   </style>
 </head>
@@ -185,13 +273,13 @@
     <div class="profile-card" id="profile-card">
       <div class="profile-nav">
         <button class="nav-btn" onclick="window.history.back()">&lt; Back</button>
-        <button class="nav-info-btn" onclick="alert('Version info coming soon!')">Version info</button>
+        <button class="nav-info-btn" id="open-version-info">Version info</button>
       </div>
       <div class="profile-avatar-wrap">
-        <img src="https://ui-avatars.com/api/?name=User&background=5ecbff&color=222&size=128" 
-             alt="Foto Profil" class="profile-avatar" id="profile-avatar"/>
+        <img src="" alt="Foto Profil" class="profile-avatar empty" id="profile-avatar"/>
         <input type="file" accept="image/*" id="profile-photo-input" style="display:none"/>
         <label for="profile-photo-input" class="edit-photo-label">Edit photo</label>
+        <button class="avatar-remove-btn" id="avatar-remove-btn" style="display:none;">Remove Photo</button>
       </div>
       <div class="profile-greeting" id="profile-greeting">
         Selamat datang, <b id="profile-username">User</b> 👋
@@ -202,6 +290,7 @@
         <button class="xp-level-btn" id="xp-level-btn">level 1</button>
       </div>
       <div class="xp-bar-label">XP Progress</div>
+      <div class="xp-progress-percent" id="xp-progress-percent">0%</div>
       <div class="xp-bar">
         <div class="xp-bar-inner" id="xp-bar-inner" style="width:0%"></div>
       </div>
@@ -214,16 +303,22 @@
       </div>
 
       <div class="profile-btn-row">
-        <button class="profile-btn" onclick="editProfile()">Edit Profile</button>
-        <button class="profile-btn" onclick="openSettings()">Settings</button>
+        <button class="profile-btn" onclick="showEditProfile()">Edit Profile</button>
+        <button class="profile-btn" onclick="showSettings()">Settings</button>
       </div>
-      <div class="profile-footer">
-        © 2025 Abelion Notes. All rights reserved.
+    </div>
+    <div class="profile-footer">
+      © 2025 Abelion Notes. All rights reserved.
+    </div>
+    <!-- Modal Overlay & Panel -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-panel" id="modal-panel">
+        <!-- content injected via JS -->
       </div>
     </div>
   </div>
   <script>
-    // DATA TITLE / RANK
+    // --- Data Title/Rank ---
     const TITLES = [
       { rank: 1, key:"newbie", icon:"🪜", name:"Newbie", cond: p=>!!p },
       { rank: 2, key:"explorer", icon:"🌿", name:"Explorer", cond: p=>(p.days||0)>=3 },
@@ -232,7 +327,7 @@
       { rank: 5, key:"master", icon:"💎", name:"Master", cond: p=>(p.days||0)>=30 && p.usedAll },
       { rank: 6, key:"grandmaster", icon:"👑", name:"Grandmaster", cond: p=>(p.level||0)>=40||(p.weekly||0)>90 }
     ];
-    // XP LEVEL SYSTEM
+    // --- XP Level System ---
     function getLevelXP(level) {
       if(level<=5) return 10;
       if(level<=10) return 15;
@@ -242,6 +337,7 @@
     // Dummy user data for demo
     let user = {
       username: "Abelion",
+      bio: "Creative Developer & Visionary.",
       photo: "",
       xp: 17,
       level: 3,
@@ -251,7 +347,6 @@
       weekly: 60,
       title: "intermediate" // key
     };
-    // load user from localStorage
     function loadUser() {
       try {
         return JSON.parse(localStorage.getItem('abelion-profile-v4')) || user;
@@ -260,11 +355,24 @@
     function saveUser(u) {
       localStorage.setItem('abelion-profile-v4', JSON.stringify(u));
     }
-    // UI Render
+    // --- UI Render ---
     function render() {
       user = loadUser();
       // Avatar
-      document.getElementById('profile-avatar').src = user.photo || 'https://ui-avatars.com/api/?name='+encodeURIComponent(user.username||'User')+'&background=5ecbff&color=222&size=128';
+      const avatar = document.getElementById('profile-avatar');
+      if (!user.photo) {
+        avatar.src = "";
+        avatar.classList.add("empty");
+        avatar.style.background = "#dde4ee";
+        avatar.style.objectFit = "contain";
+        document.getElementById('avatar-remove-btn').style.display = "none";
+      } else {
+        avatar.src = user.photo;
+        avatar.classList.remove("empty");
+        avatar.style.background = "#dde8f8";
+        avatar.style.objectFit = "cover";
+        document.getElementById('avatar-remove-btn').style.display = "block";
+      }
       document.getElementById('profile-username').innerText = user.username||'User';
       // Greeting
       let hour = new Date().getHours();
@@ -274,10 +382,11 @@
       let activeTitle = TITLES.find(t=>t.key===user.title) || TITLES[0];
       document.getElementById('xp-title-btn').innerText = activeTitle.icon+' '+activeTitle.name;
       document.getElementById('xp-level-btn').innerText = 'level '+(user.level||1);
-      // XP bar
+      // XP bar + percent
       let levelXP = getLevelXP(user.level||1);
-      let xpPercent = Math.min(100, Math.round(100*(user.xp||0)/levelXP));
+      let xpPercent = Math.max(0, Math.min(100, Math.round(100*(user.xp||0)/levelXP)));
       document.getElementById('xp-bar-inner').style.width = xpPercent+'%';
+      document.getElementById('xp-progress-percent').innerText = xpPercent+"%";
       document.getElementById('xp-countdown').innerText = (levelXP-(user.xp||0))+' XP untuk naik level';
       // Badges
       let badgesHTML = TITLES.map(t=>{
@@ -301,7 +410,7 @@
         }
       });
     }
-    // Edit photo
+    // --- Avatar Edit/Remove ---
     document.querySelector('.edit-photo-label').onclick = ()=>document.getElementById('profile-photo-input').click();
     document.getElementById('profile-photo-input').onchange = function(e){
       let file = e.target.files[0];
@@ -312,15 +421,105 @@
         user.photo = ev.target.result; saveUser(user); render();
       }; reader.readAsDataURL(file);
     };
-    // Ganti title
+    document.getElementById('avatar-remove-btn').onclick = function(){
+      if(confirm("Hapus foto profil?")) {
+        user.photo = ""; saveUser(user); render();
+      }
+    }
+    // --- Ganti title ---
     document.getElementById('change-title-btn').onclick = function(){
       alert("Klik badge yang sudah terbuka untuk mengaktifkan title/rank kamu!");
     };
-    // Dummy: Edit profile/settings
-    window.editProfile = ()=>alert('Fitur edit profile segera hadir!');
-    window.openSettings = ()=>alert('Settings coming soon!');
-    // Animasi masuk
+    // --- Modal logic (reusable) ---
+    function showModal(html, afterShow) {
+      const overlay = document.getElementById('modal-overlay');
+      const panel = document.getElementById('modal-panel');
+      panel.innerHTML = html;
+      overlay.classList.add('active');
+      gsap.fromTo(panel,{y:60,opacity:0},{y:0,opacity:1,duration:.37,ease:"power2.out"});
+      overlay.onclick = e => { if(e.target===overlay) hideModal(); };
+      setTimeout(()=>{ // Focus first input if any
+        let inp = panel.querySelector('input,textarea,select');
+        if(inp) inp.focus();
+      },200);
+      if(afterShow) afterShow(panel);
+    }
+    function hideModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+    }
+    // --- Edit Profile Modal ---
+    function showEditProfile() {
+      showModal(`
+        <button class="modal-close-btn" onclick="hideModal()">Tutup</button>
+        <div class="modal-title">Edit Profile</div>
+        <label class="modal-form-label" for="modal-username">Username</label>
+        <input class="modal-input" type="text" id="modal-username" maxlength="30" value="${user.username||""}"/>
+        <label class="modal-form-label" for="modal-bio">Bio Singkat</label>
+        <textarea class="modal-textarea" id="modal-bio" maxlength="90">${user.bio||""}</textarea>
+        <div class="modal-btn-row">
+          <button class="modal-btn" onclick="resetProfile()">Reset Profile</button>
+          <button class="modal-btn" onclick="saveEditProfile()">Save</button>
+        </div>
+      `, (panel)=>{
+        // Save handler
+        window.saveEditProfile = function(){
+          let uname = panel.querySelector('#modal-username').value.trim();
+          let bio = panel.querySelector('#modal-bio').value.trim();
+          if(!uname) { alert("Username wajib diisi."); return; }
+          user.username = uname;
+          user.bio = bio;
+          saveUser(user); hideModal(); render();
+        }
+        window.resetProfile = function(){
+          if(confirm("Reset semua data profil?")) {
+            localStorage.removeItem('abelion-profile-v4');
+            hideModal(); location.reload();
+          }
+        }
+      });
+    }
+    // --- Settings Modal ---
+    function showSettings() {
+      showModal(`
+        <button class="modal-close-btn" onclick="hideModal()">Tutup</button>
+        <div class="modal-title">Settings & Preferensi</div>
+        <ul class="modal-version-list">
+          <li>🌗 Tema & Bahasa, font</li>
+          <li>📓 Catatan & Navigasi</li>
+          <li>🔒 Privasi & Data</li>
+          <li>⚠️ Notifikasi & Reminder</li>
+          <li>💬 Kontak Developer & Bantuan</li>
+        </ul>
+        <div style="margin:22px 0 0 0;">
+          <b>Note:</b> <span style="color:#eaffff">Pengaturan lanjutan hadir di versi selanjutnya.</span>
+        </div>
+      `);
+    }
+    // --- Version Info Modal ---
+    document.getElementById('open-version-info').onclick = function(){
+      showModal(`
+        <button class="modal-close-btn" onclick="hideModal()">Tutup</button>
+        <div class="modal-title">Version Info</div>
+        <div style="margin-bottom:13px;">
+          Abelion Notes v1.2.1 <br>
+          Build 238-A <br>
+          Rilis: 17 Juni 2025
+        </div>
+        <ul class="modal-version-list">
+          <li>🆕 Fitur Baru: <i>contoh</i></li>
+          <li>🛠 Perbaikan: <i>contoh</i></li>
+          <li>📋 Catatan: <i>contoh</i></li>
+          <li>🔜 Rencana Update v1.3.0: <i>Contoh</i></li>
+        </ul>
+        <div style="margin-top:17px;color:#ffe;">
+          <b>✨ Terima kasih sudah jadi bagian dari perjalanan OlivX.</b>
+        </div>
+      `);
+    };
+
+    // --- Animasi masuk ---
     window.onload = () => {
+      render();
       gsap.from(".profile-card", {y:50, opacity:0, duration:.7, ease:"power3.out"});
       gsap.from(".profile-avatar", {scale:0.7, opacity:0, duration:.9, delay:.13, ease:"back.out(1.7)"});
       gsap.from(".profile-greeting", {x:40, opacity:0, duration:.7, delay:.3});
@@ -329,8 +528,6 @@
       gsap.from(".badge-panel", {y:38, opacity:0, duration:.8, delay:.53});
       gsap.from(".profile-btn-row", {x:-30, opacity:0, duration:.6, delay:.7});
     };
-    // INIT
-    render();
   </script>
 </body>
 </html>
