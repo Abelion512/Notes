@@ -3,29 +3,33 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile – Abelion Notes</title>
+  <title>Profil – Abelion Notes</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <style>
     :root {
-      --blue-gradient: linear-gradient(135deg,#5ecbff 0%,#4b7cf3 100%);
-      --blue-glow: 0 3px 18px #38a2ff55;
-      --bg-main: #141e2e;
-      --bg-card: #5b91ea;
-      --bg-badge: linear-gradient(120deg,#76dfff 0%,#4b7cf3 100%);
-      --text-main: #fff;
-      --text-sub: #bfe4ff;
-      --badge-locked: #dde4ee;
-      --btn-radius: 18px;
+      --abelion-blue-main: #1785ff;
+      --abelion-blue-grad: linear-gradient(90deg, #39b2ff 0%, #1785ff 100%);
+      --abelion-blue-bg: #101e2d;
+      --abelion-card-bg: #121e2a;
+      --abelion-accent: #39b2ff;
+      --abelion-accent-dark: #1785ff;
+      --abelion-soft: #19283b;
+      --abelion-text: #eaffff;
+      --abelion-label: #b0e2ff;
+      --badge-locked: #22384b;
       --footer-height: 54px;
-      --transition: .17s cubic-bezier(.7,0,.3,1);
+      --border-radius: 27px;
+      --shadow: 0 8px 38px #1e5cff28, 0 1.5px 8px #0002;
+      --btn-radius: 14px;
+      --transition: .18s cubic-bezier(.7,0,.3,1);
       --font-main: 'Inter', Arial, sans-serif;
     }
     html, body {
-      background: var(--bg-main);
+      background: var(--abelion-blue-bg);
       min-height: 100vh;
       font-family: var(--font-main);
-      color: var(--text-main);
+      color: var(--abelion-text);
       padding: 0; margin: 0;
       transition: background var(--transition);
       height: 100%;
@@ -39,14 +43,14 @@
       justify-content: flex-start;
       position: relative;
       height: 100vh;
-      background: var(--bg-main);
+      background: var(--abelion-blue-bg);
     }
     .profile-card {
-      background: var(--bg-card);
+      background: var(--abelion-card-bg);
       width: 100%;
-      max-width: 400px;
-      border-radius: 36px;
-      box-shadow: var(--blue-glow);
+      max-width: 410px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
       padding: 35px 20px 65px 20px;
       text-align: center;
       margin: 38px 0 22px 0;
@@ -64,64 +68,56 @@
       padding: 0 18px;
     }
     .nav-btn, .nav-info-btn {
-      background: var(--blue-gradient);
+      background: var(--abelion-blue-grad);
       color: #fff; border: none;
       border-radius: 15px; padding: 7px 18px; font-weight: 600; font-size: .97em;
-      cursor: pointer; outline: none; margin:0 2px; box-shadow:0 1.5px 8px #0b3a7f22;
+      cursor: pointer; outline: none; margin:0 2px; box-shadow:0 1.5px 8px #39b2ff18;
       transition: filter .14s;
     }
     .nav-btn:active, .nav-info-btn:active { filter:brightness(0.92);}
-    .profile-avatar-wrap { margin-top: 20px; margin-bottom: 18px; }
+    .profile-avatar-wrap { margin-top: 18px; margin-bottom: 16px; }
     .profile-avatar {
-      width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
-      border: 3.5px solid #fff;
-      background: #dde4ee;
+      width: 94px; height: 94px; border-radius: 50%; object-fit: cover;
+      border: 3.5px solid var(--abelion-accent);
+      background: #101e2d;
       cursor: pointer; transition: box-shadow .19s;
       display: block; margin: 0 auto 7px auto;
       position: relative; z-index: 2;
     }
     .profile-avatar.empty {
-      background: #dde4ee;
-      border: 3.5px solid #d1e1f0;
+      background: #1d2c42;
+      border: 3.5px solid #22384b;
       box-shadow: none;
     }
-    .edit-photo-label {
-      display:block; color: #2b326b; background: #fff; font-weight:700;
-      border-radius: 99px; padding:7px 22px; font-size:1.06em; margin:0 auto;
-      box-shadow:0 1px 5px #3b528215;
-      transition: background .17s, color .13s;
-      cursor:not-allowed; margin-bottom: 8px;
-      opacity:0.6;
-      pointer-events: none;
-    }
     .profile-greeting {
-      font-size:1.13em; color:var(--text-main); margin-bottom:22px; font-weight:500;
+      font-size:1.15em; color:var(--abelion-label); margin-bottom:22px; font-weight:500;
+      margin-top:10px;
     }
     .level-title-row {
-      display: flex; justify-content:center; gap:14px; align-items:center; margin-bottom:18px;
+      display: flex; justify-content:center; gap:12px; align-items:center; margin-bottom:14px;
     }
     .xp-title-btn, .xp-level-btn {
-      background: var(--blue-gradient-rev);
+      background: var(--abelion-blue-grad);
       color: #fff; border: none;
-      border-radius: 16px; padding: 7px 19px; font-weight:700; font-size:1.02em;
-      letter-spacing:.02em; box-shadow:0 1.5px 8px #1d5bcf22; margin:0;
-      cursor:not-allowed; opacity:.6;
+      border-radius: 15px; padding: 7px 19px; font-weight:700; font-size:1.03em;
+      letter-spacing:.01em; box-shadow:0 1.5px 8px #39b2ff18; margin:0;
+      cursor: pointer;
       display:inline-flex; align-items:center; gap:8px;
     }
     .xp-bar-label {
-      font-size:1.06em; color:var(--text-sub); margin-bottom:5px; margin-top:7px;
+      font-size:1.05em; color:var(--abelion-label); margin-bottom:2px; margin-top:7px;
       letter-spacing: 0.01em; font-weight: 700;
     }
-    /* XP Panel Adaptasi */
+    /* XP Panel Abelion */
     .xp-panel {
-      background: #23242c;
+      background: #131d30;
       border-radius: 19px;
-      box-shadow: 0 3px 20px #38a2ff1a;
-      border: 1.6px solid #2674d9;
-      padding: 19px 16px 15px 16px;
+      box-shadow: 0 3px 24px #39b2ff22;
+      border: 1.6px solid #1785ff;
+      padding: 19px 16px 13px 16px;
       max-width: 370px;
-      margin: 0 auto 28px auto;
-      color: #fff;
+      margin: 0 auto 26px auto;
+      color: #eaffff;
       position: relative;
       display: flex; flex-direction: column; align-items: flex-start;
     }
@@ -131,40 +127,40 @@
       justify-content: flex-start;
       width: 100%;
       gap: 10px;
-      margin-bottom: 13px;
+      margin-bottom: 12px;
     }
-    .xp-panel-icon { font-size: 1.36em; margin-right: 3px;}
-    .xp-panel-title { font-weight: 700; font-size: 1.15em; letter-spacing:0.01em;}
+    .xp-panel-icon { font-size: 1.24em; margin-right: 3px;}
+    .xp-panel-title { font-weight: 700; font-size: 1.12em; letter-spacing:0.01em;}
     .xp-panel-xpnext {
       margin-left:auto; display: flex; align-items: center; gap:6px;
-      color: #bfe4ff; font-size: 1em; font-weight: 600;
+      color: #7fd7ff; font-size: 1em; font-weight: 600;
     }
     .xp-bar-wrap { width: 100%; }
     .xp-bar {
-      background: #232f43;
+      background: #152842;
       border-radius: 12px;
       width: 100%;
-      height: 19px;
+      height: 18px;
       position: relative;
       overflow: hidden;
-      margin-bottom: 9px;
-      margin-top:8px;
+      margin-bottom: 7px;
+      margin-top:6px;
     }
     .xp-bar-inner {
       position: absolute; left: 0; top: 0; height: 100%;
-      background: linear-gradient(90deg,#47d6fe 0%,#418bfa 100%);
+      background: var(--abelion-blue-grad);
       border-radius: 12px 0 0 12px;
       width: 0%;
       transition: width .7s cubic-bezier(.65,0,.35,1.06);
       z-index: 1;
     }
     .xp-bar-percent {
-      position: absolute; left: 14px; top: 47%;
+      position: absolute; left: 14px; top: 50%;
       transform: translateY(-50%);
       font-weight: 800; color: #fff;
-      font-size: 1.08em;
+      font-size: 1.03em;
       z-index: 2;
-      text-shadow: 0 1px 6px #3480ce99;
+      text-shadow: 0 1px 6px #39b2ff99;
       letter-spacing: 0.01em;
       background: transparent;
       min-width: 40px;
@@ -174,59 +170,59 @@
       display: block;
       text-align: right;
       font-size: .98em;
-      color: #3fd0ff;
+      color: #39b2ff;
       font-weight: bold;
       text-decoration: none;
-      margin-top: 4px;
+      margin-top: 2px;
       letter-spacing: 0.02em;
     }
     .xp-help-link:hover { text-decoration: underline; }
     .xp-countdown {
-      color:#bfe4ff;
+      color:#89c6ff;
       font-size: 1em;
       margin-bottom:0px;
       min-height:1em;
-      margin-top: 1px;
+      margin-top: 2px;
       letter-spacing:0.01em;
       text-align:right;
       width:100%;
       font-weight:600;
     }
     .badge-panel {
-      background: var(--bg-badge);
+      background: #152842;
       padding:15px 6px 14px 6px;
-      border-radius: 22px;
-      margin: 14px 0 42px 0;
+      border-radius: 18px;
+      margin: 14px 0 40px 0;
       display: flex; flex-direction: column; align-items:center;
       box-shadow:0 2px 16px #5ecbff18;
       width:100%; max-width:290px;
       transition: background var(--transition);
-      min-height: 110px;
+      min-height: 105px;
       position:relative;
       z-index:2;
     }
     .badge-panel-title {
-      font-weight:700; margin-bottom:13px; font-size:1.11em; letter-spacing:0.01em;
-      color:#23242c;
+      font-weight:700; margin-bottom:13px; font-size:1.09em; letter-spacing:0.01em;
+      color:#83cfff;
     }
     .badges-row {
-      display: flex; gap:14px; justify-content:center; flex-wrap: wrap;
+      display: flex; gap:12px; justify-content:center; flex-wrap: wrap;
       margin-bottom:0px; margin-top:4px;
       width:100%;
       z-index:2;
     }
     .badge-box {
-      width:52px; height:52px; background:var(--badge-locked);
-      border-radius: 18px; display:flex; align-items:center; justify-content:center;
-      font-size:1.8em; font-weight:700; color:#7c8ca9;
+      width:48px; height:48px; background:var(--badge-locked);
+      border-radius: 16px; display:flex; align-items:center; justify-content:center;
+      font-size:1.6em; font-weight:700; color:#4c6b8e;
       box-shadow:0 1px 10px #1112;
-      cursor:not-allowed; transition: background .2s, transform .2s, color .2s;
-      border:2.8px solid transparent;
+      cursor: pointer; transition: background .2s, transform .2s, color .2s;
+      border:2.2px solid transparent;
       position:relative;
       z-index:2;
     }
     .badge-box--unlocked {
-      background: #fff; color: #4b7cf3; border-color: #5ecbff;
+      background: #182c46; color: #39b2ff; border-color: #39b2ff;
     }
     .badge-box--active {
       border-color: #fffa67;
@@ -245,15 +241,15 @@
     }
     .badge-box:hover .badge-label { opacity:1; bottom:-31px;}
     .profile-btn-row {
-      display:flex; gap:16px; justify-content:center; margin:28px 0 0 0;
+      display:flex; gap:16px; justify-content:center; margin:25px 0 0 0;
       width:100%; max-width:330px;
     }
     .profile-btn {
-      background: var(--blue-gradient); color:#fff; border:none;
+      background: var(--abelion-blue-grad); color:#fff; border:none;
       border-radius: var(--btn-radius);
       font-size:1em; font-weight:700;
       padding:11px 0; width:100%; min-width:113px;
-      box-shadow:0 1.5px 8px #1d5bcf18;
+      box-shadow:0 1.5px 8px #39b2ff18;
       cursor:pointer; transition:filter .14s;
     }
     .profile-btn:active { filter:brightness(0.96);}
@@ -273,12 +269,12 @@
     }
     @media (max-width: 540px){
       .profile-card {
-        padding: 14px 2vw 80px 2vw;
+        padding: 14px 2vw 82px 2vw;
         max-width: 98vw;
-        border-radius: 26px;
+        border-radius: 22px;
         min-height: calc(100vh - 70px);
       }
-      .profile-btn-row{ max-width: 99vw; flex-direction: column; gap: 12px; }
+      .profile-btn-row{ max-width: 99vw; flex-direction: column; gap: 13px; }
       .badge-panel { max-width: 98vw; }
       .xp-panel { max-width: 99vw;}
     }
@@ -288,12 +284,11 @@
   <div class="container">
     <div class="profile-card" id="profile-card">
       <div class="profile-nav">
-        <button class="nav-btn" style="opacity:0.5;pointer-events:none;">&lt; Back</button>
-        <button class="nav-info-btn" style="opacity:0.5;pointer-events:none;">Version info</button>
+        <button class="nav-btn" onclick="window.location.href='edit-profile.html'">Edit Profile</button>
+        <button class="nav-info-btn" onclick="window.location.href='settings.html'">Settings</button>
       </div>
       <div class="profile-avatar-wrap">
         <img src="" alt="Foto Profil" class="profile-avatar empty" id="profile-avatar"/>
-        <label class="edit-photo-label">Edit photo</label>
       </div>
       <div class="profile-greeting" id="profile-greeting">
         Selamat pagi, <b id="profile-username">Abelion</b> 👋
@@ -308,7 +303,7 @@
           <span class="xp-panel-icon">🌙</span>
           <span class="xp-panel-title">Terus maju!</span>
           <span class="xp-panel-xpnext">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#3fd0ff" style="vertical-align:middle;"><path d="M13,2 L9,13 L15,13 L11,22 L21,9 L15,9 L19,2 L13,2 Z"></path></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#39b2ff" style="vertical-align:middle;"><path d="M13,2 L9,13 L15,13 L11,22 L21,9 L15,9 L19,2 L13,2 Z"></path></svg>
             <span id="xp-next">7 XP untuk naik</span>
           </span>
         </div>
@@ -331,13 +326,9 @@
           <div class="badge-box"></div>
         </div>
       </div>
-      <div class="profile-btn-row">
-        <button class="profile-btn" style="opacity:0.7;pointer-events:none;">Edit Profile</button>
-        <button class="profile-btn" style="opacity:0.7;pointer-events:none;">Settings</button>
+      <div class="profile-footer">
+        © 2025 Abelion Notes. All rights reserved.
       </div>
-    </div>
-    <div class="profile-footer">
-      © 2025 Abelion Notes. All rights reserved.
     </div>
   </div>
   <script>
